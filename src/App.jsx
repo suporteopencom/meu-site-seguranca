@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; // Adicionado useState
+import React, { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
@@ -36,7 +36,6 @@ const styles = {
     width: '100%',
     boxSizing: 'border-box'
   },
-  // Estilos para o Dropdown
   dropdownWrapper: {
     position: 'relative',
     display: 'inline-block',
@@ -60,30 +59,36 @@ const styles = {
     top: '110%',
     right: 0,
     backgroundColor: '#002147',
-    minWidth: '180px',
+    minWidth: '200px',
     borderRadius: '8px',
-    boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
+    boxShadow: '0 8px 16px rgba(0,0,0,0.3)',
     overflow: 'hidden',
     zIndex: 3000,
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '8px',
+    gap: '8px'
   },
   dropdownItem: {
-    padding: '12px 20px',
+    padding: '12px 15px',
     color: 'white',
     textDecoration: 'none',
     display: 'block',
     fontWeight: '600',
     fontSize: '14px',
     transition: '0.3s',
-    borderBottom: '1px solid rgba(255,255,255,0.1)',
+    borderRadius: '5px',
     cursor: 'pointer',
-    textAlign: 'left'
+    textAlign: 'left',
+    border: 'none',
+    backgroundColor: 'rgba(255,255,255,0.05)'
   },
   sliderWrapper: {
     width: '100%',
     height: 'calc(80vh - 90px)', 
     overflow: 'hidden',
     position: 'relative',
-    backgroundColor: '#000'
+    backgroundColor: '#000' // Fundo preto para preencher sobras do 'contain'
   },
   slideContent: {
     height: '100%',
@@ -92,12 +97,13 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundSize: 'cover',
     backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'contain', // GARANTE QUE A IMAGEM NÃO CORTE
     color: 'white'
   },
   overlay: {
-    backgroundColor: 'rgba(0, 33, 71, 0.5)', 
+    backgroundColor: 'rgba(0, 33, 71, 0.4)', 
     width: '100%',
     height: '100%',
     display: 'flex',
@@ -109,7 +115,6 @@ const styles = {
 };
 
 function App() {
-  // Estado para abrir/fechar o menu de contato
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
@@ -118,7 +123,11 @@ function App() {
         body, html { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
         * { box-sizing: border-box; }
         .nav-link:hover { color: #FBC02D !important; }
-        .dropdown-item:hover { background-color: #FBC02D !important; color: #002147 !important; }
+        .dropdown-item:hover { 
+          background-color: #FBC02D !important; 
+          color: #002147 !important; 
+          transform: translateX(5px);
+        }
         .swiper-button-next, .swiper-button-prev { color: #FBC02D !important; transform: scale(0.6); }
         .swiper-pagination-bullet-active { background: #FBC02D !important; }
       `}</style>
@@ -132,24 +141,22 @@ function App() {
         <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
           <a href="#" style={{ textDecoration: 'none', color: '#002147', fontWeight: '700' }} className="nav-link">Início</a>
           <a href="#" style={{ textDecoration: 'none', color: '#002147', fontWeight: '700' }} className="nav-link">Produtos</a>
-          <a href="#" style={{ textDecoration: 'none', color: '#002147', fontWeight: '700' }} className="nav-link">Suporte</a>
           
-          {/* BOTÃO CONTATO COM SUB-MENU */}
           <div style={styles.dropdownWrapper}>
             <button 
               style={styles.contactBtn} 
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)} // Fecha ao clicar fora
+              onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
             >
               Contato {isDropdownOpen ? '▴' : '▾'}
             </button>
 
             {isDropdownOpen && (
               <div style={styles.dropdownMenu}>
-                <a href="https://wa.me/5585920059746" target="_blank" className="dropdown-item">
+                <a href="https://wa.me/5585991220790" target="_blank" rel="noreferrer" className="dropdown-item" style={styles.dropdownItem}>
                   💼 Comercial
                 </a>
-                <a href="https://wa.me/5585982307968" target="_blank" className="dropdown-item">
+                <a href="https://wa.me/5585991220790" target="_blank" rel="noreferrer" className="dropdown-item" style={styles.dropdownItem}>
                   🛠️ Suporte Técnico
                 </a>
               </div>
@@ -158,7 +165,7 @@ function App() {
         </div>
       </nav>
 
-      {/* TODOS OS SEUS SLIDERS */}
+      {/* SLIDER COM TEXTOS E IMAGENS INTEIRAS */}
       <div style={styles.sliderWrapper}>
         <Swiper
           modules={[Autoplay, Pagination, Navigation]}
@@ -168,6 +175,7 @@ function App() {
           loop={true}
           style={{ height: '100%' }}
         >
+          {/* Slide 0 */}
           <SwiperSlide>
             <div style={{ ...styles.slideContent, backgroundImage: 'url("/banner0.jpg")' }}>
               <div style={styles.overlay}>
@@ -177,6 +185,7 @@ function App() {
             </div>
           </SwiperSlide>
 
+          {/* Slide 1 */}
           <SwiperSlide>
             <div style={{ ...styles.slideContent, backgroundImage: 'url("/banner1.jpg")' }}>
               <div style={styles.overlay}>
@@ -186,6 +195,7 @@ function App() {
             </div>
           </SwiperSlide>
 
+          {/* Slide 2 */}
           <SwiperSlide>
             <div style={{ ...styles.slideContent, backgroundImage: 'url("/banner2.jpg")' }}>
               <div style={styles.overlay}>
@@ -195,6 +205,7 @@ function App() {
             </div>
           </SwiperSlide>
 
+          {/* Slide 3 */}
           <SwiperSlide>
             <div style={{ ...styles.slideContent, backgroundImage: 'url("/banner3.jpg")' }}>
               <div style={styles.overlay}>
@@ -204,6 +215,7 @@ function App() {
             </div>
           </SwiperSlide>
 
+          {/* Slide 4 */}
           <SwiperSlide>
             <div style={{ ...styles.slideContent, backgroundImage: 'url("/banner4.jpg")' }}>
               <div style={styles.overlay}>
