@@ -1,132 +1,241 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; // Adicionado useState
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
-// --- ESTILOS ---
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+
 const styles = {
-  // Reset para garantir que o container ocupe tudo
   mainContainer: {
     margin: 0,
     padding: 0,
-    width: '100vw', // 100% da largura da tela
-    minHeight: '100vh', // 100% da altura da tela
     fontFamily: 'Segoe UI, Roboto, sans-serif',
-    backgroundColor: '#f0f2f5',
-    overflowX: 'hidden', // Evita barra de rolagem lateral
+    minHeight: '100vh',
+    width: '100vw',
+    backgroundColor: '#fff',
+    backgroundImage: 'url("/logo-opencom.png")', 
+    backgroundAttachment: 'fixed',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '25%',
+    overflowX: 'hidden',
   },
   nav: {
     display: 'flex',
     justifyContent: 'space-between',
-    padding: '20px 5%',
-    backgroundColor: '#002147',
-    color: 'white',
     alignItems: 'center',
-    width: '100%',
-    boxSizing: 'border-box', // Garante que o padding não "empurre" a largura
+    padding: '0 5%',
+    height: '90px',
+    backgroundColor: '#ffffff',
+    borderBottom: '4px solid #FBC02D',
+    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
     position: 'sticky',
     top: 0,
-    zIndex: 1000
-  },
-  hero: {
+    zIndex: 2000,
     width: '100%',
-    height: '70vh',
+    boxSizing: 'border-box'
+  },
+  // Estilos para o Dropdown
+  dropdownWrapper: {
+    position: 'relative',
+    display: 'inline-block',
+  },
+  contactBtn: {
+    textDecoration: 'none',
+    color: '#FBC02D',
+    backgroundColor: '#002147',
+    padding: '10px 20px',
+    borderRadius: '5px',
+    fontWeight: '700',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '5px'
+  },
+  dropdownMenu: {
+    position: 'absolute',
+    top: '110%',
+    right: 0,
+    backgroundColor: '#002147',
+    minWidth: '180px',
+    borderRadius: '8px',
+    boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
+    overflow: 'hidden',
+    zIndex: 3000,
+  },
+  dropdownItem: {
+    padding: '12px 20px',
+    color: 'white',
+    textDecoration: 'none',
+    display: 'block',
+    fontWeight: '600',
+    fontSize: '14px',
+    transition: '0.3s',
+    borderBottom: '1px solid rgba(255,255,255,0.1)',
+    cursor: 'pointer',
+    textAlign: 'left'
+  },
+  sliderWrapper: {
+    width: '100%',
+    height: 'calc(80vh - 90px)', 
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: '#000'
+  },
+  slideContent: {
+    height: '100%',
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    textAlign: 'center',
-    // Imagem de fundo cobrindo tudo
-    background: 'linear-gradient(rgba(0,33,71,0.7), rgba(0,33,71,0.7)), url("https://images.unsplash.com/photo-1454165833767-027ffea9e7a7?auto=format&fit=crop&w=1350&q=80")',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    color: 'white',
+    color: 'white'
   },
-  section: {
-    padding: '80px 10%',
-    textAlign: 'center',
+  overlay: {
+    backgroundColor: 'rgba(0, 33, 71, 0.5)', 
     width: '100%',
-    boxSizing: 'border-box'
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '0 10%'
   }
 };
 
 function App() {
-  const [mensagem, setMensagem] = useState("Sistemas de Segurança Inteligentes");
+  // Estado para abrir/fechar o menu de contato
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
     <div style={styles.mainContainer}>
-      {/* CSS RESET INJETADO (Isso remove as bordas brancas do navegador) */}
       <style>{`
-        body { margin: 0; padding: 0; overflow-x: hidden; }
+        body, html { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
         * { box-sizing: border-box; }
+        .nav-link:hover { color: #FBC02D !important; }
+        .dropdown-item:hover { background-color: #FBC02D !important; color: #002147 !important; }
+        .swiper-button-next, .swiper-button-prev { color: #FBC02D !important; transform: scale(0.6); }
+        .swiper-pagination-bullet-active { background: #FBC02D !important; }
       `}</style>
-      
-      {/* Menu Superior */}
+
+      {/* CABEÇALHO */}
       <nav style={styles.nav}>
-        <div style={{ fontSize: '24px', fontWeight: 'bold', letterSpacing: '1px' }}>
-          OPEM TESTE
+        <div style={{ fontSize: '24px', fontWeight: '900', color: '#002147' }}>
+          <span style={{color: '#FBC02D'}}>OPENCOM</span> TECNOLOGIA
         </div>
-        <div style={{ display: 'flex', gap: '30px' }}>
-          <a href="#servicos" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Serviços</a>
-          <a href="#contato" style={{ color: '#FBC02D', textDecoration: 'none', fontWeight: 'bold' }}>Fale Conosco</a>
+        
+        <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
+          <a href="#" style={{ textDecoration: 'none', color: '#002147', fontWeight: '700' }} className="nav-link">Início</a>
+          <a href="#" style={{ textDecoration: 'none', color: '#002147', fontWeight: '700' }} className="nav-link">Produtos</a>
+          <a href="#" style={{ textDecoration: 'none', color: '#002147', fontWeight: '700' }} className="nav-link">Suporte</a>
+          
+          {/* BOTÃO CONTATO COM SUB-MENU */}
+          <div style={styles.dropdownWrapper}>
+            <button 
+              style={styles.contactBtn} 
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)} // Fecha ao clicar fora
+            >
+              Contato {isDropdownOpen ? '▴' : '▾'}
+            </button>
+
+            {isDropdownOpen && (
+              <div style={styles.dropdownMenu}>
+                <a href="https://wa.me/55859920059746" target="_blank" className="dropdown-item">
+                  💼 Comercial
+                </a>
+                <a href="https://wa.me/5585982307968" target="_blank" className="dropdown-item">
+                  🛠️ Suporte Técnico
+                </a>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 
-      {/* Banner de Tela Cheia */}
-      <header style={styles.hero}>
-        <h1 style={{ fontSize: '3.5rem', marginBottom: '10px' }}>OPEM TESTE</h1>
-        <p style={{ fontSize: '1.4rem', maxWidth: '600px' }}>{mensagem}</p>
-        <button 
-          style={{
-            backgroundColor: '#FBC02D',
-            color: '#002147',
-            padding: '15px 40px',
-            border: 'none',
-            fontSize: '1.1rem',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            marginTop: '30px',
-            borderRadius: '50px',
-            transition: '0.3s'
-          }}
-          onClick={() => alert("WhatsApp: (00) 00000-0000")}
+      {/* TODOS OS SEUS SLIDERS */}
+      <div style={styles.sliderWrapper}>
+        <Swiper
+          modules={[Autoplay, Pagination, Navigation]}
+          autoplay={{ delay: 5000 }}
+          pagination={{ clickable: true }}
+          navigation
+          loop={true}
+          style={{ height: '100%' }}
         >
-          SOLICITAR ORÇAMENTO AGORA
-        </button>
-      </header>
+          <SwiperSlide>
+            <div style={{ ...styles.slideContent, backgroundImage: 'url("/banner0.jpg")' }}>
+              <div style={styles.overlay}>
+                <h2 style={{ fontSize: '3rem', margin: 0, textAlign: 'center' }}>PROJETOS PERSONALIZADOS</h2>
+                <p style={{ fontSize: '1.2rem' }}>Segurança Inteligente para sua Empresa</p>
+              </div>
+            </div>
+          </SwiperSlide>
 
-      {/* Seção de Serviços */}
-      <section id="servicos" style={styles.section}>
-        <h2 style={{ fontSize: '2.5rem', color: '#002147' }}>Nossas Soluções</h2>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-          gap: '30px', 
-          marginTop: '40px' 
-        }}>
-          <ServiceCard title="Monitoramento" desc="Proteção 24 horas por dia com central técnica." />
-          <ServiceCard title="CFTV Digital" desc="Câmeras de alta definição com IA." />
-          <ServiceCard title="Controle de Acesso" desc="Biometria e reconhecimento facial." />
-        </div>
-      </section>
+          <SwiperSlide>
+            <div style={{ ...styles.slideContent, backgroundImage: 'url("/banner1.jpg")' }}>
+              <div style={styles.overlay}>
+                <h2 style={{ fontSize: '3rem', margin: 0, textAlign: 'center' }}>SISTEMA DE PONTO WEB</h2>
+                <p style={{ fontSize: '1.2rem' }}>Sistema Acuttis ponto</p>
+              </div>
+            </div>
+          </SwiperSlide>
 
-      <footer style={{ backgroundColor: '#001529', color: 'white', padding: '40px', textAlign: 'center' }}>
-        <p>© 2026 OPENCOM TECNOLOGIA - Solução em acesso, ponto e Segurança</p>
+          <SwiperSlide>
+            <div style={{ ...styles.slideContent, backgroundImage: 'url("/banner2.jpg")' }}>
+              <div style={styles.overlay}>
+                <h2 style={{ fontSize: '3rem', margin: 0, textAlign: 'center' }}>SISTEMA DE PONTO WEB</h2>
+                <p style={{ fontSize: '1.2rem' }}>Sistema Secullum Ponto web</p>
+              </div>
+            </div>
+          </SwiperSlide>
+
+          <SwiperSlide>
+            <div style={{ ...styles.slideContent, backgroundImage: 'url("/banner3.jpg")' }}>
+              <div style={styles.overlay}>
+                <h2 style={{ fontSize: '3rem', margin: 0, textAlign: 'center' }}>RECONHECIMENTO FACIAL</h2>
+                <p style={{ fontSize: '1.2rem' }}>Mais segurança para sua empresa</p>
+              </div>
+            </div>
+          </SwiperSlide>
+
+          <SwiperSlide>
+            <div style={{ ...styles.slideContent, backgroundImage: 'url("/banner4.jpg")' }}>
+              <div style={styles.overlay}>
+                <h2 style={{ fontSize: '3rem', margin: 0, textAlign: 'center' }}>LEITORES FACIAIS</h2>
+                <p style={{ fontSize: '1.2rem' }}>Mais praticidade e segurança</p>
+              </div>
+            </div>
+          </SwiperSlide>
+        </Swiper>
+      </div>
+
+      {/* CATEGORIAS */}
+      <div style={{ padding: '60px 5%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
+        {['Relógio de Ponto', 'Controle de Acesso', 'Catracas', 'Softwares'].map((item) => (
+          <div key={item} style={{ 
+            backgroundColor: '#ffffff', 
+            padding: '40px 20px', 
+            borderRadius: '8px', 
+            textAlign: 'center', 
+            boxShadow: '0 10px 25px rgba(0,0,0,0.05)',
+            borderTop: '5px solid #002147',
+            cursor: 'pointer'
+          }}>
+            <h3 style={{ color: '#002147', margin: 0 }}>{item}</h3>
+          </div>
+        ))}
+      </div>
+
+      <footer style={{ backgroundColor: '#002147', color: 'white', padding: '50px 5%', textAlign: 'center' }}>
+        <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>OPENCOM TECNOLOGIA</p>
+        <p style={{ opacity: 0.7 }}>Revenda e Assistência Técnica Autorizada</p>
       </footer>
-    </div>
-  );
-}
-
-// Componente auxiliar para os cards
-function ServiceCard({ title, desc }) {
-  return (
-    <div style={{ 
-      backgroundColor: 'white', 
-      padding: '40px', 
-      borderRadius: '15px', 
-      boxShadow: '0 10px 20px rgba(0,0,0,0.05)',
-      textAlign: 'left',
-      borderBottom: '5px solid #FBC02D'
-    }}>
-      <h3 style={{ color: '#002147', marginTop: 0 }}>{title}</h3>
-      <p style={{ color: '#666', lineHeight: '1.6' }}>{desc}</p>
     </div>
   );
 }
