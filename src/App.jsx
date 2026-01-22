@@ -146,7 +146,7 @@ function App() {
 
             {isDropdownOpen && (
               <div style={styles.dropdownMenu}>
-                <a href="https://wa.me/55859920059746" target="_blank" className="dropdown-item">
+                <a href="https://wa.me/5585920059746" target="_blank" className="dropdown-item">
                   💼 Comercial
                 </a>
                 <a href="https://wa.me/5585982307968" target="_blank" className="dropdown-item">
