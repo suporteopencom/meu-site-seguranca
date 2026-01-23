@@ -187,7 +187,7 @@ function App() {
 
           {/* Slide 1 */}
           <SwiperSlide>
-            <div style={{ ...styles.slideContent, backgroundImage: 'url("/banner5.jpg")' }}>
+            <div style={{ ...styles.slideContent, backgroundImage: 'url("/banner5.JFIF")' }}>
               <div style={styles.overlay}>
                 <h2 style={{ fontSize: '3rem', margin: 0, textAlign: 'center' }}>MANUTENÇÃO DE PONTO</h2>
                 <p style={{ fontSize: '1.2rem' }}>Assistência autorizada de varias marcas do mercado</p>
