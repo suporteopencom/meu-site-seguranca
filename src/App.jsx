@@ -170,8 +170,8 @@ export default function App() {
         '/acesso': "Controle de Acesso e softwares de controle - Opencom",
         '/softwares': "Softwares de Gestão de Ponto - Opencom",
         '/suprimentos': "Suprimentos e Acessórios - Opencom",
-        '/servicos' : "Serviços personalizados - opencom",
-        '/blog': "Central informativa - opencom",
+        '/servicos': "Serviços personalizados - opencom",
+        '/blog': "Central informativa - opencom"
       };
       document.title = titulos[location.pathname] || "Opencom Tecnologia";
       // 2. Atualiza o Logo na Aba (Favicon)
