@@ -142,7 +142,7 @@ const BotaoFlutuante = ({ selectedProduct }) => {
           width: '80px', 
           height: '80px', 
           objectFit: 'cover',
-          transform: 'scale(1.3)',
+          transform: 'scale(1.2)',
           borderRadius: '50%', 
           border: '3px solid #12bdd5',
           backgroundColor: '#000' // Fundo preto para combinar com o boneco
@@ -822,7 +822,7 @@ export default function App() {
             {[
               { id: 'blog 1', 
                 nome: "Por que ter Relógio de ponto?", 
-                img: "/blog.png",
+                img: "/duvida1.mp4",
                 videoUrl: "/blog1.mp4", 
                 desc: "Vamos conferir?.", 
                 detalhes: "Para manter seu relgio sempre operante e pronto para o trabalho.", 
@@ -842,7 +842,33 @@ export default function App() {
               
             ].map((prod) => (
               <div key={prod.id} className="product-card" onClick={() => setSelectedProduct(prod)} style={{ backgroundColor: 'white', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', cursor: 'pointer', transition: '0.3s' }}>
-                <div style={{ height: '220px', backgroundImage: `url(${prod.img})`, backgroundSize: 'contain',backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
+                {/* ÁREA DE MÍDIA ALTERADA ABAIXO */}
+    <div style={{ height: '220px', position: 'relative', overflow: 'hidden', backgroundColor: '#000' }}>
+      {prod.img.endsWith('.mp4') ? (
+        <video 
+          src={prod.img} 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          style={{ 
+        width: '100%', 
+        height: '100%', 
+        objectFit: 'contain', // Preenche tudo cortando as sobras
+        objectPosition: 'center', // Centraliza o boneco
+        //transform: 'scale(1.1)', // Um micro-zoom para garantir que não sobrem linhas pretas
+        display: 'block'}} 
+        />
+      ) : (
+        <div style={{ 
+          height: '100%', 
+          backgroundImage: `url(${prod.img})`, 
+          backgroundSize: 'cover', 
+          backgroundRepeat: 'no-repeat', 
+          backgroundPosition: 'center' 
+        }} />
+      )}
+    </div>
                 <div style={{ padding: '25px' }}>
                   <h3>{prod.nome}</h3>
                   <p style={{ fontSize: '14px', color: '#666' }}>{prod.desc}</p>
