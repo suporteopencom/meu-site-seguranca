@@ -510,7 +510,7 @@ export default function App() {
               { 
                 id: 'acesso 2', 
                 nome: "Fechadura Eletroímã", 
-                img: "/banner0.jpg", 
+                img: "/fechadura.jpg", 
                 desc: "Força de tração de até 300kg.", 
                 detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
                 specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
