@@ -1,0 +1,689 @@
+import React, { useState, useEffect, memo } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+
+// --- COMPONENTE DE CONTAGEM REGRESSIVA ---
+const CountdownTimer = ({ targetDate }) => {
+  const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0 });
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = new Date(targetDate).getTime() - now;
+      if (distance < 0) clearInterval(timer);
+      else setTimeLeft({
+        h: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        m: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+        s: Math.floor((distance % (1000 * 60)) / 1000),
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [targetDate]);
+  return <div style={{ color: '#d32f2f', fontWeight: 'bold', fontSize: '14px', marginTop: '10px' }}>⏱ Expira em: {timeLeft.h}h {timeLeft.m}m {timeLeft.s}s</div>;
+};
+
+// --- COMPONENTE DO SLIDER PRINCIPAL ---
+const MainSlider = memo(() => {
+  const slides = [
+    { img: "/banner0.jpg", title: "PROJETOS PERSONALIZADOS", sub: "Segurança Inteligente" },
+    { img: "/banner5.jpeg", title: "MANUTENÇÃO", sub: "Assistência autorizada do seu relógio" },
+    { img: "/banner2.jpg", title: "SISTEMA DE PONTO WEB", sub: "Gestão na Nuvem" },
+    { img: "/banner3.jpg", title: "RECONHECIMENTO FACIAL", sub: "Mais Praticidade" },
+    { img: "/banner4.jpg", title: "LEITORES MODERNOS", sub: "Alta Performance" }
+  ];
+
+  return (
+    <div style={{ width: '100%', height: '70vh', backgroundColor: '#000', overflow: 'hidden' }}>
+      <Swiper 
+        modules={[Autoplay, Pagination, Navigation]} 
+        autoplay={{ delay: 5000, disableOnInteraction: false }} 
+        pagination={{ clickable: true }} 
+        navigation 
+        loop 
+        style={{ height: '100%' }}
+      >
+        {slides.map((slide, index) => (
+          <SwiperSlide key={index}>
+            <div style={{ 
+              height: '100%', width: '100%', display: 'flex', flexDirection: 'column', 
+              justifyContent: 'center', alignItems: 'center', backgroundPosition: 'center', 
+              backgroundRepeat: 'no-repeat', backgroundSize: 'cover', color: 'white',
+              backgroundImage: `url("${slide.img}")` 
+            }}>
+              <div style={{ backgroundColor: 'rgba(0, 33, 71, 0.5)', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '0 10%' }}>
+                <h2 className="anim-titulo" style={{ fontSize: '3.5rem', textAlign: 'center', margin: 0, fontWeight: '800', textShadow: '2px 2px 8px rgba(0,0,0,0.7)' }}>
+                  {slide.title}
+                </h2>
+                <p className="anim-subtitulo" style={{ fontSize: '1.5rem', marginTop: '15px', fontWeight: '400' }}>
+                  {slide.sub}
+                </p>
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  );
+});
+
+const styles = {
+  mainContainer: { margin: 0, padding: 0, fontFamily: 'Segoe UI, Roboto, sans-serif', minHeight: '100vh', width: '100vw', backgroundColor: '#fff', overflowX: 'hidden' },
+  nav: { 
+    display: 'flex', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    padding: '0 3%', 
+    height: '80px', 
+    backgroundColor: 'rgba(0, 0, 0, 0.85)', 
+    backdropFilter: 'blur(8px)', 
+    borderBottom: '2px solid #12bdd5', 
+    position: 'sticky', 
+    top: 0, 
+    zIndex: 2000, 
+    width: '100%', 
+    boxSizing: 'border-box', 
+    boxShadow: '0 4px 15px rgba(0,0,0,0.3)' 
+  },
+  navBtn: { 
+    backgroundColor: 'transparent', 
+    border: 'none', 
+    color: '#ffffff', 
+    fontWeight: '600', 
+    fontSize: '13px', 
+    cursor: 'pointer', 
+    display: 'flex', 
+    alignItems: 'center', 
+    gap: '5px',
+    textTransform: 'uppercase',
+    transition: '0.3s'
+  },
+  contactBtn: { 
+    color: '#fff', 
+    backgroundColor: '#12bdd5', 
+    padding: '10px 18px', 
+    borderRadius: '5px', 
+    fontWeight: '700', 
+    border: 'none', 
+    cursor: 'pointer', 
+    fontSize: '14px', 
+    transition: '0.3s' 
+  },
+  logoImg: {
+    height: '90px', 
+    cursor: 'pointer',
+    transition: '0.5s',
+    display: 'block'
+  },
+  sectionDark: { display: 'flex', flexWrap: 'wrap', backgroundColor: '#001a38', color: 'white', minHeight: '500px', overflow: 'hidden' },
+  sectionLight: { display: 'flex', flexWrap: 'wrap', backgroundColor: '#ffffff', color: '#002147', minHeight: '500px', overflow: 'hidden' },
+  textSide: { flex: '1 1 500px', padding: '80px 7%', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'left' },
+  imgSide: { flex: '1 1 500px', backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '400px', transition: 'transform 0.5s ease' },
+  iconBox: { backgroundColor: '#12bdd5', width: '55px', height: '45px', borderRadius: '8px', marginBottom: '25px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  footerTop: { backgroundColor: '#002147', color: 'white', padding: '40px 7%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', borderBottom: '1px solid rgba(255,255,255,0.1)', gap: '20px' },
+  footerMain: { backgroundColor: '#001a38', color: 'white', padding: '60px 7%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '40px', textAlign: 'left' },
+  footerColumn: { display: 'flex', flexDirection: 'column', gap: '15px' },
+  footerLink: { color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '14px', transition: '0.3s', cursor: 'pointer' },
+  footerTitle: { fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: '#fff' }
+};
+
+function App() {
+  const [currentPage, setCurrentPage] = useState('inicio'); 
+  const [showSupportModal, setShowSupportModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const navigateTo = (page) => {
+    setSelectedProduct(null);
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+  const titulos = {
+    inicio: "Opencom Tecnologia | Segurança e Ponto Eletrônico",
+    relogios: "Relógios de Ponto Homologados - Opencom",
+    acesso: "Controle de Acesso e Fechaduras - Opencom",
+    softwares: "Softwares de Gestão de Ponto - Opencom",
+    suprimentos: "Suprimentos e Acessórios - Opencom"
+  };
+  document.title = titulos[currentPage] || "Opencom Tecnologia";
+
+  return (
+    <div style={styles.mainContainer}>
+      <style>{`
+         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+         .swiper-slide-active .anim-titulo { animation: fadeInUp 0.8s ease forwards; }
+         .swiper-slide-active .anim-subtitulo { animation: fadeInUp 0.8s ease forwards; animation-delay: 0.3s; opacity: 0; }
+         .btn-hover:hover { background-color: #12bdd5 !important; color: #002147 !important; transform: scale(1.05); }
+         .img-zoom:hover { transform: scale(1.05); }
+         .footer-link:hover { color: #12bdd5 !important; padding-left: 5px; }
+         .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important; }
+      `}</style>
+
+      {/* NAVIGATION */}
+      <nav style={styles.nav}>
+        <div onClick={() => navigateTo('inicio')} style={{ display: 'flex', alignItems: 'center' }}>
+          <img src="/logo.png" alt="Opencom Tecnologia" style={styles.logoImg} className="img-zoom" />
+        </div>
+        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+          <button style={styles.navBtn} onClick={() => navigateTo('inicio')}>Início</button>
+          <button style={styles.navBtn} onClick={() => navigateTo('sobre')}>Sobre Nós</button>
+          <button style={styles.navBtn} onClick={() => navigateTo('relogios')}>Relógios</button>
+          <button style={styles.navBtn} onClick={() => navigateTo('acesso')}>Acesso</button>
+          <button style={styles.navBtn} onClick={() => navigateTo('catracas')}>Segurança</button>
+          <button style={styles.navBtn} onClick={() => navigateTo('softwares')}>Software de ponto</button>
+          <button style={styles.navBtn} onClick={() => navigateTo('suprimentos')}>Suprimentos</button>
+          <button style={styles.navBtn} onClick={() => navigateTo('servicos')}>Serviços</button>
+          <button style={styles.contactBtn} className="btn-hover" onClick={() => window.open('https://wa.me/5585991220790?text=Olá!')}>Contato 📱</button>
+        </div>
+      </nav>
+
+      {/* RENDERIZAÇÃO DE PÁGINAS */}
+      {currentPage === 'inicio' ? (
+        <div style={{ animation: 'fadeIn 0.8s ease-out' }}>
+          <MainSlider />
+          
+          {/* 2. SEÇÃO SUPORTE TÉCNICO COM SLIDER DE IMAGENS */}
+<section style={styles.sectionLight}>
+  {/* Lado da Imagem transformado em Slider */}
+  <div style={{ ...styles.imgSide, position: 'relative', overflow: 'hidden' }}>
+    <Swiper
+      modules={[Autoplay, Pagination]}
+      autoplay={{ delay: 3000, disableOnInteraction: false }}
+      loop
+      style={{ height: '100%', width: '100%' }}
+    >
+      <SwiperSlide>
+        <div className="img-zoom" style={{ 
+          height: '100%', width: '100%', 
+          backgroundImage: 'url("/suporte.jpg")', 
+          backgroundSize: 'cover', backgroundPosition: 'center' 
+        }}></div>
+      </SwiperSlide>
+      <SwiperSlide>
+        <div className="img-zoom" style={{ 
+          height: '100%', width: '100%', 
+          backgroundImage: 'url("/banner5.jpeg")', // Troque pela sua 2ª imagem
+          backgroundSize: 'cover', backgroundPosition: 'center' 
+        }}></div>
+      </SwiperSlide>
+      <SwiperSlide>
+        <div className="img-zoom" style={{ 
+          height: '100%', width: '100%', 
+          backgroundImage: 'url("/suporte2.jpg")', // Troque pela sua 3ª imagem
+          backgroundSize: 'cover', backgroundPosition: 'center' 
+        }}></div>
+      </SwiperSlide>
+    </Swiper>
+  </div>
+
+  {/* Lado do Texto (Permanece igual) */}
+  <div style={styles.textSide}>
+    <div style={styles.iconBox}><span style={{ fontSize: '24px', color: '#fff' }}>🛠️</span></div>
+    <h2 style={{ fontSize: '2.8rem', fontWeight: '800', marginBottom: '20px', lineHeight: '1.1' }}>
+      Suporte Técnico Especializado
+    </h2>
+    <p style={{ fontSize: '1.2rem', color: '#444', marginBottom: '25px', lineHeight: '1.6' }}>
+      Na Opencom Tecnologia, simplificamos processos para garantir resultados. Nossa equipe está pronta para oferecer:
+    </p>
+    <ul style={{ listStyle: 'none', padding: 0, fontSize: '1.1rem', color: '#002147', fontWeight: '600' }}>
+      <li style={{ marginBottom: '10px' }}>✅ Manutenção Preventiva & Corretiva</li>
+      <li style={{ marginBottom: '10px' }}>✅ Treinamento Operacional Completo</li>
+      <li style={{ marginBottom: '10px' }}>✅ Atendimento Rápido e Eficiente</li>
+    </ul>
+    <button 
+      onClick={() => setShowSupportModal(true)} 
+      style={{ width: 'fit-content', padding: '15px 40px', borderRadius: '50px', border: '2px solid #001a38', backgroundColor: '#001a38', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }} 
+      className="btn-hover"
+    >
+      Agendar Agora
+    </button>
+  </div>
+</section>
+
+          {/* SEÇÃO SUPRIMETOS */}
+          <section style={styles.sectionDark}>
+            <div style={styles.textSide}>
+              <div style={styles.iconBox}>📦</div>
+              <h2 style={{ fontSize: '2.8rem', fontWeight: '800' }}>Suprimentos</h2>
+              <p>Qualidade e praticidade para sua empresa.</p>
+              <button onClick={() => navigateTo('suprimentos')} style={{ width: 'fit-content', padding: '15px 35px', borderRadius: '50px', backgroundColor: '#12bdd5', border: 'none', fontWeight: 'bold', cursor: 'pointer' }} className="btn-hover">Ver Suprimentos</button>
+            </div>
+            <div className="img-zoom" style={{ ...styles.imgSide, backgroundImage: 'url("/banner4.jpg")' }}></div>
+          </section>
+
+          {/* SEÇÃO CERTIFICADO DIGITAL */}
+          <section style={styles.sectionLight}>
+            <div className="img-zoom" style={{ ...styles.imgSide, backgroundImage: 'url("/certificado.jpg")' }}></div>
+            <div style={styles.textSide}>
+              <div style={styles.iconBox}>🛡️</div>
+              <h2 style={{ fontSize: '2.8rem', fontWeight: '800' }}>Certificado Digital</h2>
+              <p>Sua identidade eletrônica segura. Agende agora!</p>
+              <button onClick={() => window.open('https://wa.me/5585991220790')} style={{ width: 'fit-content', padding: '15px 40px', borderRadius: '50px', backgroundColor: '#001a38', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }} className="btn-hover">Peça o seu agora</button>
+            </div>
+          </section>
+
+          {/* SEÇÃO CANCELAS */}
+          <section style={styles.sectionDark}>
+            <div style={styles.textSide}>
+              <div style={styles.iconBox}>🎫</div>
+              <h2 style={{ fontSize: '2.8rem', fontWeight: '800' }}>Cancelas e Totens</h2>
+              <p>Organize entradas e saídas com máxima segurança.</p>
+              <button onClick={() => window.open('https://wa.me/5585991220790')} style={{ width: 'fit-content', padding: '15px 35px', borderRadius: '50px', backgroundColor: '#12bdd5', border: 'none', fontWeight: 'bold', cursor: 'pointer' }} className="btn-hover">Orçamento Personalizado</button>
+            </div>
+            <div className="img-zoom" style={{ ...styles.imgSide, backgroundImage: 'url("/banner5.jpeg")' }}></div>
+          </section>
+        </div>
+
+      ) : currentPage === 'sobre' ? (
+        <div style={{ animation: 'fadeIn 0.6s ease-out' }}>
+          <div style={{ backgroundColor: '#002147', color: 'white', padding: '100px 5%', textAlign: 'center' }}>
+            <h1 style={{ fontSize: '3.5rem', fontWeight: '900' }}>Nossa História</h1>
+          </div>
+          <div style={{ padding: '80px 10%', textAlign: 'center' }}>
+            <h2 style={{ color: '#002147' }}>Especialistas em Soluções Tecnológicas</h2>
+            <p>A Opencom Tecnologia nasceu com o propósito de simplificar a rotina das empresas através da tecnologia de ponta em Fortaleza - CE.</p>
+            <button style={styles.contactBtn} onClick={() => navigateTo('inicio')}>Voltar ao Início</button>
+          </div>
+        </div>
+
+      ) : currentPage === 'relogios' ? (
+        <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
+          <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
+            <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Relógios de Ponto</h1>
+            <p style={{ opacity: 0.8, marginTop: '10px' }}>Equipamentos homologados pela Portaria 671 do MTP</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
+            {[
+              { id: 'produto 1', 
+                nome: "IDClass 671", 
+                img: "/banner3.jpg", 
+                desc: "Reconhecimento facial de alta precisão.", 
+                detalhes: "Homologado pelo MTP. Reconhecimento rápido e seguro.", 
+                specs: ["Facial", "Wi-Fi", "Portaria 671"] },
+              { id: 'produto 2', 
+                nome: "HEXA ADV B 671", 
+                img: "/banner4.jpg", 
+                desc: "Segurança e rapidez na digital.", 
+                detalhes: "Equipado com impressora térmica. Ideal para fluxos intensos.", 
+                specs: ["Digital", "Impressora", "USB"] },
+              { id: 'produto 3', 
+                nome: "BLUE 671", 
+                img: "/banner2.jpg", 
+                desc: "Controle via Smartphone.", 
+                detalhes: "Perfeito para funcionários externos com GPS e Selfie.", 
+                specs: ["GPS", "Nuvem", "Facial"] },
+              { id: 'produto 4', 
+                nome: "EVO 50 AFD", 
+                img: "/banner2.jpg", 
+                desc: "Reconhecimento facial de alta precisão.", 
+                detalhes: "Homologado pelo MTP. Reconhecimento rápido e seguro.", 
+                specs: ["Facial", "Wi-Fi", "Portaria 671"] },
+              { id: 'produto 5', 
+                nome: "EVO 40 AFD", 
+                img: "/banner2.jpg", 
+                desc: "Reconhecimento facial de alta precisão.", 
+                detalhes: "Homologado pelo MTP. Reconhecimento rápido e seguro.", 
+                specs: ["Facial", "Wi-Fi", "Portaria 671"] },
+            ].map((prod) => (
+              <div key={prod.id} className="product-card" onClick={() => setSelectedProduct(prod)} style={{ backgroundColor: 'white', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', cursor: 'pointer', transition: '0.3s' }}>
+                <div style={{ height: '220px', backgroundImage: `url(${prod.img})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                <div style={{ padding: '25px' }}>
+                  <h3>{prod.nome}</h3>
+                  <p style={{ fontSize: '14px', color: '#666' }}>{prod.desc}</p>
+                  <span style={{ color: '#12bdd5', fontWeight: 'bold' }}>Ver Detalhes +</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {selectedProduct && (
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
+              <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '800px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
+                <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer' }}>X</button>
+                <div style={{ flex: '1 1 350px', minHeight: '350px', backgroundImage: `url(${selectedProduct.img})`, backgroundSize: 'cover' }} />
+                <div style={{ flex: '1 1 350px', padding: '40px' }}>
+                  <h2 style={{ color: '#002147' }}>{selectedProduct.nome}</h2>
+                  <p>{selectedProduct.detalhes}</p>
+                  <button style={{ ...styles.contactBtn, width: '100%', marginTop: '20px' }} onClick={() => window.open(`https://wa.me/5585991220790?text=Quero o ${selectedProduct.nome}`)}>Orçamento WhatsApp</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        ) : currentPage === 'acesso' ? (
+        /* --- PÁGINA DE CONTROLE DE ACESSO --- */
+        <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
+          <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
+            <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Controle de Acesso</h1>
+            <p style={{ opacity: 0.8, marginTop: '10px' }}>Segurança e tecnologia para restringir e monitorar ambientes</p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
+            {[
+              { 
+                id: 'acesso 1', 
+                nome: "Sistema IDSecure", 
+                img: "/banner4.jpg", 
+                desc: "Gestão completa de portas e usuários.", 
+                detalhes: "Capacidade para controlar múltiplos leitores e fechaduras. Comunicação via rede e software de gestão integrado.", 
+                specs: ["Display Touchscreen", "Biometria/Senha/Cartão", "Web Server", "Até 15.000 usuários"] 
+              },
+              { 
+                id: 'acesso 2', 
+                nome: "Fechadura Eletroímã", 
+                img: "/banner0.jpg", 
+                desc: "Força de tração de até 300kg.", 
+                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
+              },
+              { 
+                id: 'acesso 3', 
+                nome: "Sistema SECULLUM ACESSO", 
+                img: "/banner3.jpg", 
+                desc: "Acesso rápido via cartão ou chaveiro.", 
+                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
+                specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
+              }
+            ].map((prod) => (
+              <div key={prod.id} className="product-card" onClick={() => setSelectedProduct(prod)} style={{ backgroundColor: 'white', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', cursor: 'pointer', transition: '0.3s' }}>
+                <div style={{ height: '220px', backgroundImage: `url(${prod.img})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                <div style={{ padding: '25px' }}>
+                  <h3 style={{ color: '#002147', marginBottom: '10px' }}>{prod.nome}</h3>
+                  <p style={{ fontSize: '14px', color: '#666', marginBottom: '20px' }}>{prod.desc}</p>
+                  <span style={{ color: '#12bdd5', fontWeight: 'bold' }}>Ver Detalhes +</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: '40px' }}>
+            <button style={styles.contactBtn} onClick={() => navigateTo('inicio')}>Voltar ao Início</button>
+          </div>
+
+          {selectedProduct && (
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
+              <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '800px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
+                <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer' }}>X</button>
+                <div style={{ flex: '1 1 350px', minHeight: '350px', backgroundImage: `url(${selectedProduct.img})`, backgroundSize: 'cover' }} />
+                <div style={{ flex: '1 1 350px', padding: '40px' }}>
+                  <h2 style={{ color: '#002147' }}>{selectedProduct.nome}</h2>
+                  <p>{selectedProduct.detalhes}</p>
+                  <button style={{ ...styles.contactBtn, width: '100%', marginTop: '20px' }} onClick={() => window.open(`https://wa.me/5585991220790?text=Quero o ${selectedProduct.nome}`)}>Orçamento WhatsApp</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        ) : currentPage === 'softwares' ? (
+        /* --- PÁGINA DE SOFTWARE DE PONTO --- */
+        <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
+          <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
+            <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Controle de Ponto</h1>
+            <p style={{ opacity: 0.8, marginTop: '10px' }}>Segurança e tecnologia para restringir e monitorar ambientes</p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
+            {[
+              { 
+                id: 'sistema 1', 
+                nome: "Secullum Ponto Web", 
+                img: "/banner4.jpg", 
+                desc: "Gestão completa de portas e usuários.", 
+                detalhes: "Capacidade para controlar múltiplos leitores e fechaduras. Comunicação via rede e software de gestão integrado.", 
+                specs: ["Display Touchscreen", "Biometria/Senha/Cartão", "Web Server", "Até 15.000 usuários"] 
+              },
+              { 
+                id: 'sistema 2', 
+                nome: "Evo Ponto Web", 
+                img: "/banner0.jpg", 
+                desc: "Força de tração de até 300kg.", 
+                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
+              },
+              { 
+                id: 'sistema 3', 
+                nome: "Acuttis Web", 
+                img: "/banner3.jpg", 
+                desc: "Acesso rápido via cartão ou chaveiro.", 
+                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
+                specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
+              }
+            ].map((prod) => (
+              <div key={prod.id} className="product-card" onClick={() => setSelectedProduct(prod)} style={{ backgroundColor: 'white', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', cursor: 'pointer', transition: '0.3s' }}>
+                <div style={{ height: '220px', backgroundImage: `url(${prod.img})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                <div style={{ padding: '25px' }}>
+                  <h3 style={{ color: '#002147', marginBottom: '10px' }}>{prod.nome}</h3>
+                  <p style={{ fontSize: '14px', color: '#666', marginBottom: '20px' }}>{prod.desc}</p>
+                  <span style={{ color: '#12bdd5', fontWeight: 'bold' }}>Ver Detalhes +</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: '40px' }}>
+            <button style={styles.contactBtn} onClick={() => navigateTo('inicio')}>Voltar ao Início</button>
+          </div>
+
+          {selectedProduct && (
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
+              <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '800px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
+                <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer' }}>X</button>
+                <div style={{ flex: '1 1 350px', minHeight: '350px', backgroundImage: `url(${selectedProduct.img})`, backgroundSize: 'cover' }} />
+                <div style={{ flex: '1 1 350px', padding: '40px' }}>
+                  <h2 style={{ color: '#002147' }}>{selectedProduct.nome}</h2>
+                  <p>{selectedProduct.detalhes}</p>
+                  <button style={{ ...styles.contactBtn, width: '100%', marginTop: '20px' }} onClick={() => window.open(`https://wa.me/5585991220790?text=Quero o ${selectedProduct.nome}`)}>Orçamento WhatsApp</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        ) : currentPage === 'suprimentos' ? (
+        /* --- PÁGINA DE SUPRIMENTOS --- */
+        <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
+          <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
+            <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Suprimentos Para Ponto,Acesso,Segurança e Escritório.</h1>
+            <p style={{ opacity: 0.8, marginTop: '10px' }}>Segurança e tecnologia para restringir e monitorar ambientes</p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
+            {[
+              { 
+                id: 'suprimento 1', 
+                nome: "Bobina térmica", 
+                img: "/banner4.jpg", 
+                desc: "Gestão completa de portas e usuários.", 
+                detalhes: "Capacidade para controlar múltiplos leitores e fechaduras. Comunicação via rede e software de gestão integrado.", 
+                specs: ["Display Touchscreen", "Biometria/Senha/Cartão", "Web Server", "Até 15.000 usuários"] 
+              },
+              { 
+                id: 'suprimento2', 
+                nome: "Cartão Proximidade", 
+                img: "/banner0.jpg", 
+                desc: "Força de tração de até 300kg.", 
+                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
+              },
+              { 
+                id: 'suprimento 3', 
+                nome: "Fonte Rep. HEXA", 
+                img: "/banner3.jpg", 
+                desc: "Acesso rápido via cartão ou chaveiro.", 
+                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
+                specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
+              }
+            ].map((prod) => (
+              <div key={prod.id} className="product-card" onClick={() => setSelectedProduct(prod)} style={{ backgroundColor: 'white', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', cursor: 'pointer', transition: '0.3s' }}>
+                <div style={{ height: '220px', backgroundImage: `url(${prod.img})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                <div style={{ padding: '25px' }}>
+                  <h3 style={{ color: '#002147', marginBottom: '10px' }}>{prod.nome}</h3>
+                  <p style={{ fontSize: '14px', color: '#666', marginBottom: '20px' }}>{prod.desc}</p>
+                  <span style={{ color: '#12bdd5', fontWeight: 'bold' }}>Ver Detalhes +</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: '40px' }}>
+            <button style={styles.contactBtn} onClick={() => navigateTo('inicio')}>Voltar ao Início</button>
+          </div>
+
+          {selectedProduct && (
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
+              <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '800px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
+                <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer' }}>X</button>
+                <div style={{ flex: '1 1 350px', minHeight: '350px', backgroundImage: `url(${selectedProduct.img})`, backgroundSize: 'cover' }} />
+                <div style={{ flex: '1 1 350px', padding: '40px' }}>
+                  <h2 style={{ color: '#002147' }}>{selectedProduct.nome}</h2>
+                  <p>{selectedProduct.detalhes}</p>
+                  <button style={{ ...styles.contactBtn, width: '100%', marginTop: '20px' }} onClick={() => window.open(`https://wa.me/5585991220790?text=Quero o ${selectedProduct.nome}`)}>Orçamento WhatsApp</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        ) : currentPage === 'servicos' ? (
+        <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
+          <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
+            <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Nossos Serviços</h1>
+            <p style={{ opacity: 0.8, marginTop: '10px' }}>Equipamentos homologados pela Portaria 671 do MTP</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
+            {[
+              { id: 'serviço 1', 
+                nome: "Manutenção de Relógio de ponto", 
+                img: "/banner3.jpg", 
+                desc: "Reconhecimento facial de alta precisão.", 
+                detalhes: "Homologado pelo MTP. Reconhecimento rápido e seguro.", 
+                specs: ["Facial", "Wi-Fi", "Portaria 671"] },
+              { id: 'serviço 2', 
+                nome: "Manutenção de catracas de acesso", 
+                img: "/banner4.jpg", 
+                desc: "Segurança e rapidez na digital.", 
+                detalhes: "Equipado com impressora térmica. Ideal para fluxos intensos.", 
+                specs: ["Digital", "Impressora", "USB"] },
+              { id: 'serviço 3', 
+                nome: "Instalação de relógios de Ponto", 
+                img: "/banner2.jpg", 
+                desc: "Controle via Smartphone.", 
+                detalhes: "Perfeito para funcionários externos com GPS e Selfie.", 
+                specs: ["GPS", "Nuvem", "Facial"] },
+              { id: 'serviço 4', 
+                nome: "Instalação de catracas de acesso", 
+                img: "/banner2.jpg", 
+                desc: "Controle via Smartphone.", 
+                detalhes: "Perfeito para funcionários externos com GPS e Selfie.", 
+                specs: ["GPS", "Nuvem", "Facial"] },
+              { id: 'serviço 5', 
+                nome: "Atualização de catracas para Facial", 
+                img: "/banner2.jpg", 
+                desc: "Controle via Smartphone.", 
+                detalhes: "Perfeito para funcionários externos com GPS e Selfie.", 
+                specs: ["GPS", "Nuvem", "Facial"] },  
+              { id: 'serviço 6', 
+                nome: "instalação de catracas e faciais para NEXT FIT", 
+                img: "/banner2.jpg", 
+                desc: "Controle via Smartphone.", 
+                detalhes: "Perfeito para funcionários externos com GPS e Selfie.", 
+                specs: ["GPS", "Nuvem", "Facial"] },   
+              
+            ].map((prod) => (
+              <div key={prod.id} className="product-card" onClick={() => setSelectedProduct(prod)} style={{ backgroundColor: 'white', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', cursor: 'pointer', transition: '0.3s' }}>
+                <div style={{ height: '220px', backgroundImage: `url(${prod.img})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                <div style={{ padding: '25px' }}>
+                  <h3>{prod.nome}</h3>
+                  <p style={{ fontSize: '14px', color: '#666' }}>{prod.desc}</p>
+                  <span style={{ color: '#12bdd5', fontWeight: 'bold' }}>Ver Detalhes +</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {selectedProduct && (
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
+              <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '800px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
+                <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer' }}>X</button>
+                <div style={{ flex: '1 1 350px', minHeight: '350px', backgroundImage: `url(${selectedProduct.img})`, backgroundSize: 'cover' }} />
+                <div style={{ flex: '1 1 350px', padding: '40px' }}>
+                  <h2 style={{ color: '#002147' }}>{selectedProduct.nome}</h2>
+                  <p>{selectedProduct.detalhes}</p>
+                  <button style={{ ...styles.contactBtn, width: '100%', marginTop: '20px' }} onClick={() => window.open(`https://wa.me/5585991220790?text=Quero o ${selectedProduct.nome}`)}>Orçamento WhatsApp</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+
+      ) : (
+        <div style={{ padding: '100px 5%', textAlign: 'center', minHeight: '60vh' }}>
+          <h1 style={{ color: '#002147', fontSize: '2.5rem' }}>Nossos {currentPage}</h1>
+          <p>Seção em desenvolvimento.</p>
+          <button style={styles.contactBtn} onClick={() => navigateTo('inicio')}>Voltar ao Início</button>
+        </div>
+      )}
+
+      
+
+      {/* FOOTER COMPLETO */}
+      <footer style={{ marginTop: 'auto' }}>
+        <div style={styles.footerTop}>
+          <div style={{ textAlign: 'left' }}>
+            <p style={{ opacity: 0.8, fontSize: '14px' }}>Vamos trabalhar juntos?</p>
+            <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>Fale com a OPEN !</h2>
+          </div>
+          <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap', textAlign: 'left' }}>
+            <div><strong>Atendimento</strong><br/><span style={{ fontSize: '14px', opacity: 0.7 }}>Segunda - Sexta: 08h às 17h</span></div>
+            <div><strong>WhatsApp</strong><br/><span style={{ fontSize: '14px', opacity: 0.7 }}>(85) 99122-0790</span></div>
+          </div>
+        </div>
+        
+        <div style={styles.footerMain}>
+          <div style={styles.footerColumn}>
+            <h3 style={styles.footerTitle}>Opencom Soluções</h3>
+            <p style={{ fontSize: '14px', lineHeight: '1.6', color: 'rgba(255,255,255,0.7)' }}>
+              Especialistas em segurança eletrônica e ponto eletrônico. Missão: Contribuir para que empresas melhorem seu desempenho através de soluções em tecnologia.
+            </p>
+          </div>
+          <div style={styles.footerColumn}>
+            <h3 style={styles.footerTitle}>Menu Rápido</h3>
+            <span className="footer-link" style={styles.footerLink} onClick={() => navigateTo('inicio')}>Home</span>
+            <span className="footer-link" style={styles.footerLink} onClick={() => navigateTo('sobre')}>Sobre Nós</span>
+          </div>
+          <div style={styles.footerColumn}>
+            <h3 style={styles.footerTitle}>Serviços</h3>
+            <span className="footer-link" style={styles.footerLink} onClick={() => navigateTo('acesso')}>Controle de Acesso</span>
+            <span className="footer-link" style={styles.footerLink} onClick={() => navigateTo('relogios')}>Controle de Ponto</span>
+            <span className="footer-link" style={styles.footerLink} onClick={() => navigateTo('catracas')}>Catracas e Totens</span>
+          </div>
+        </div>
+        
+        <div style={{ backgroundColor: '#000', padding: '20px', textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>
+          OPENCOM TECNOLOGIA © 2026 - Todos os direitos reservados.
+        </div>
+      </footer>
+
+      {/* MODAL SUPORTE */}
+      {showSupportModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000 }}>
+          <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '15px', maxWidth: '400px', width: '100%', textAlign: 'center' }}>
+            <h3 style={{ color: '#002147' }}>Qual suporte você precisa?</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
+              <button style={{ padding: '12px', cursor: 'pointer' }} onClick={() => window.open('https://wa.me/5585991220790?text=Manutenção')}>🛠️ Manutenção</button>
+              <button style={{ padding: '12px', cursor: 'pointer' }} onClick={() => window.open('https://wa.me/5585991220790?text=Treinamento')}>📚 Treinamento</button>
+              <button onClick={() => setShowSupportModal(false)} style={{ marginTop: '10px', background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer' }}>Fechar</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default App;
