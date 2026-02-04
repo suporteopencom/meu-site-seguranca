@@ -167,10 +167,11 @@ export default function App() {
       const titulos = {
         '/': "Opencom Tecnologia | Segurança e Ponto Eletrônico",
         '/relogios': "Relógios de Ponto Homologados - Opencom",
-        '/acesso': "Controle de Acesso e Fechaduras - Opencom",
+        '/acesso': "Controle de Acesso e softwares de controle - Opencom",
         '/softwares': "Softwares de Gestão de Ponto - Opencom",
         '/suprimentos': "Suprimentos e Acessórios - Opencom",
-        '/promocao' : "promoções - opencom"
+        '/servico' : "Serviços personalizados - opencom",
+        '/blog': "Central informativa - opencom",
       };
       document.title = titulos[location.pathname] || "Opencom Tecnologia";
       // 2. Atualiza o Logo na Aba (Favicon)
