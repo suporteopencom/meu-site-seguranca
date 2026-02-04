@@ -637,7 +637,7 @@ export default function App() {
               { 
                 id: 'sistema 2', 
                 nome: "Evo Ponto Web", 
-                img: "/banner0.jpg", 
+                img: "/evoponto.jpeg", 
                 desc: "Força de tração de até 300kg.", 
                 detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
                 specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
@@ -719,8 +719,8 @@ export default function App() {
               },
               { 
                 id: 'suprimento 3', 
-                nome: "Fonte Rep. HEXA", 
-                img: "/banner3.jpg", 
+                nome: "Fonte Rep. HEXA/PRISMA", 
+                img: "/fontehenry.png", 
                 desc: "Acesso rápido via cartão ou chaveiro.", 
                 detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
                 specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
