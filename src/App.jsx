@@ -418,7 +418,7 @@ export default function App() {
                 specs: ["Facial", "Wi-Fi", "Portaria 671"] },
                 { id: 'produto 6', 
                 nome: "EVO 40 AFD", 
-                img: "/banner2.jpg", 
+                img: "/evo40.png", 
                 desc: "Reconhecimento facial de alta precisão.", 
                 detalhes: "Homologado pelo MTP. Reconhecimento rápido e seguro.", 
                 specs: ["Facial", "Wi-Fi", "Portaria 671"] },
@@ -462,18 +462,40 @@ export default function App() {
           </div>
 
           {selectedProduct && (
-            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
-              <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '800px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
-                <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer' }}>X</button>
-                <div style={{ flex: '1 1 350px', minHeight: '350px', backgroundImage: `url(${selectedProduct.img})`, backgroundSize: 'cover' }} />
-                <div style={{ flex: '1 1 350px', padding: '40px' }}>
-                  <h2 style={{ color: '#002147' }}>{selectedProduct.nome}</h2>
-                  <p>{selectedProduct.detalhes}</p>
-                  <button style={{ ...styles.contactBtn, width: '100%', marginTop: '20px' }} onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquerir o ${selectedProduct.nome}`)}>Orçamento WhatsApp</button>
-                </div>
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
+            <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '800px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
+              <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer', zIndex: 10 }}>X</button>
+              
+              {/* CONTAINER DA IMAGEM NO MODAL COM ZOOM INDEPENDENTE */}
+              <div style={{ 
+                flex: '1 1 350px', 
+                minHeight: '350px', 
+                overflow: 'hidden', // Garante que o zoom não saia do limite da metade do modal
+                backgroundColor: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <div style={{ 
+                  width: '100%',
+                  height: '100%',
+                  backgroundImage: `url(${selectedProduct.img})`, 
+                  backgroundSize: 'contain', // No modal, o contain costuma ser melhor para ver o produto todo
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'center',
+                  // APLICA O ZOOM INDEPENDENTE AQUI TAMBÉM:
+                  transform: `scale(${selectedProduct.zoom || 1.0})` 
+                }} />
+              </div>
+
+              <div style={{ flex: '1 1 350px', padding: '40px' }}>
+                <h2 style={{ color: '#002147' }}>{selectedProduct.nome}</h2>
+                <p>{selectedProduct.detalhes}</p>
+                <button style={{ ...styles.contactBtn, width: '100%', marginTop: '20px' }} onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquerir o ${selectedProduct.nome}`)}>Orçamento WhatsApp</button>
               </div>
             </div>
-          )}
+          </div>
+        )}
         </div>
         } />
 
