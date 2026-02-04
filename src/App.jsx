@@ -822,14 +822,15 @@ export default function App() {
             {[
               { id: 'blog 1', 
                 nome: "Por que ter Relógio de ponto?", 
-                img: "/duvida1.mp4",
+                img: "/duvida2.mp4",
                 videoUrl: "/blog1.mp4", 
                 desc: "Vamos conferir?.", 
                 detalhes: "Para manter seu relgio sempre operante e pronto para o trabalho.", 
                 specs: ["Facial", "Wi-Fi", "Portaria 671"] },
               { id: 'blog 2', 
                 nome: "Informação 2", 
-                img: "/blog.png", 
+                img: "/duvida1.mp4", 
+                videoUrl: "/blog1.mp4",
                 desc: "Segurança e rapidez na digital.", 
                 detalhes: "Equipado com impressora térmica. Ideal para fluxos intensos.", 
                 specs: ["Digital", "Impressora", "USB"] },
@@ -841,10 +842,20 @@ export default function App() {
                 specs: ["GPS", "Nuvem", "Facial"] },   
               
             ].map((prod) => (
-              <div key={prod.id} className="product-card" onClick={() => setSelectedProduct(prod)} style={{ backgroundColor: 'white', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', cursor: 'pointer', transition: '0.3s' }}>
-                {/* ÁREA DE MÍDIA ALTERADA ABAIXO */}
-    <div style={{ height: '220px', position: 'relative', overflow: 'hidden', backgroundColor: '#000' }}>
-      {prod.img.endsWith('.mp4') ? (
+  <div key={prod.id} className="product-card" onClick={() => setSelectedProduct(prod)} style={{ backgroundColor: 'white', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', cursor: 'pointer', transition: '0.3s' }}>
+    
+    {/* ÁREA DE MÍDIA UNIFICADA PARA TODOS OS CARDS */}
+    <div style={{ 
+      height: '220px', 
+      position: 'relative', 
+      overflow: 'hidden', 
+      backgroundColor: '#fff', // Fundo sempre branco
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      {/* Verifica se a string existe e termina com mp4 */}
+      {prod.img && prod.img.toLowerCase().endsWith('.mp4') ? (
         <video 
           src={prod.img} 
           autoPlay 
@@ -852,30 +863,33 @@ export default function App() {
           muted 
           playsInline 
           style={{ 
-        width: '100%', 
-        height: '100%', 
-        objectFit: 'contain', // Preenche tudo cortando as sobras
-        objectPosition: 'center', // Centraliza o boneco
-        //transform: 'scale(1.1)', // Um micro-zoom para garantir que não sobrem linhas pretas
-        display: 'block'}} 
+            width: '100%', 
+            height: '100%', 
+            objectFit: 'contain', // Mantém a proporção sem distorcer
+            objectPosition: 'center',
+            transform: 'scale(1.1)', // Aplica o zoom em todos os vídeos
+            display: 'block'
+          }} 
         />
       ) : (
         <div style={{ 
           height: '100%', 
+          width: '100%',
           backgroundImage: `url(${prod.img})`, 
-          backgroundSize: 'cover', 
+          backgroundSize: 'cover', // Imagens estáticas preenchem tudo
           backgroundRepeat: 'no-repeat', 
           backgroundPosition: 'center' 
         }} />
       )}
     </div>
-                <div style={{ padding: '25px' }}>
-                  <h3>{prod.nome}</h3>
-                  <p style={{ fontSize: '14px', color: '#666' }}>{prod.desc}</p>
-                  <span style={{ color: '#12bdd5', fontWeight: 'bold' }}>Ver Detalhes +</span>
-                </div>
-              </div>
-            ))}
+
+    <div style={{ padding: '25px' }}>
+      <h3>{prod.nome}</h3>
+      <p style={{ fontSize: '14px', color: '#666' }}>{prod.desc}</p>
+      <span style={{ color: '#12bdd5', fontWeight: 'bold' }}>Ver Detalhes +</span>
+    </div>
+  </div>
+))}
           </div>
 
           {selectedProduct && (
