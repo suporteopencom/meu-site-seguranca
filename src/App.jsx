@@ -491,10 +491,21 @@ export default function App() {
               { 
                 id: 'acesso 1', 
                 nome: "Sistema IDSecure", 
-                img: "/banner4.jpg", 
+                img: "/idsecure.jfif", 
+                zoom: "1.4",
                 desc: "Gestão completa de portas e usuários.", 
                 detalhes: "Capacidade para controlar múltiplos leitores e fechaduras. Comunicação via rede e software de gestão integrado.", 
                 specs: ["Display Touchscreen", "Biometria/Senha/Cartão", "Web Server", "Até 15.000 usuários"] 
+              },
+              
+              { 
+                id: 'acesso 3', 
+                nome: "Sistema SECULLUM ACESSO", 
+                img: "/secullumacesso.jfif", 
+                zoom: "1.2",
+                desc: "Acesso rápido via cartão ou chaveiro.", 
+                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
+                specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
               },
               { 
                 id: 'acesso 2', 
@@ -503,14 +514,6 @@ export default function App() {
                 desc: "Força de tração de até 300kg.", 
                 detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
                 specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
-              },
-              { 
-                id: 'acesso 3', 
-                nome: "Sistema SECULLUM ACESSO", 
-                img: "/banner3.jpg", 
-                desc: "Acesso rápido via cartão ou chaveiro.", 
-                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
-                specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
               },
               { 
                 id: 'acesso 4', 
@@ -546,7 +549,22 @@ export default function App() {
               },
             ].map((prod) => (
               <div key={prod.id} className="product-card" onClick={() => setSelectedProduct(prod)} style={{ backgroundColor: 'white', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', cursor: 'pointer', transition: '0.3s' }}>
-                <div style={{ height: '220px', backgroundImage: `url(${prod.img})`, backgroundSize: 'contain',backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
+                <div style={{ height: '220px', overflow: 'hidden', backgroundColor: '#fff' }}>
+      
+      {/* DIV DA IMAGEM COM ZOOM INDEPENDENTE */}
+      <div style={{ 
+        height: '100%', 
+        width: '100%',
+        backgroundImage: `url(${prod.img})`, 
+        backgroundSize: 'contain', 
+        backgroundRepeat: 'no-repeat', 
+        backgroundPosition: 'center',
+        // Aqui o zoom individual: usa o do objeto ou 1.0 como padrão
+        transform: `scale(${prod.zoom || 1.0})`, 
+        transition: 'transform 0.3s ease' 
+      }} />
+      
+    </div>
                 <div style={{ padding: '25px' }}>
                   <h3 style={{ color: '#002147', marginBottom: '10px' }}>{prod.nome}</h3>
                   <p style={{ fontSize: '14px', color: '#666', marginBottom: '20px' }}>{prod.desc}</p>
@@ -823,13 +841,15 @@ export default function App() {
               { id: 'blog 1', 
                 nome: "Por que ter Relógio de ponto?", 
                 img: "/duvida2.mp4",
+                zoom: "1.1",
                 videoUrl: "/blog1.mp4", 
                 desc: "Vamos conferir?.", 
                 detalhes: "Para manter seu relgio sempre operante e pronto para o trabalho.", 
                 specs: ["Facial", "Wi-Fi", "Portaria 671"] },
               { id: 'blog 2', 
                 nome: "Informação 2", 
-                img: "/duvida1.mp4", 
+                img: "/duvida1.mp4",
+                zoom: "1.2", 
                 videoUrl: "/blog1.mp4",
                 desc: "Segurança e rapidez na digital.", 
                 detalhes: "Equipado com impressora térmica. Ideal para fluxos intensos.", 
@@ -867,7 +887,7 @@ export default function App() {
             height: '100%', 
             objectFit: 'contain', // Mantém a proporção sem distorcer
             objectPosition: 'center',
-            transform: 'scale(1.1)', // Aplica o zoom em todos os vídeos
+            transform: `scale(${prod.zoom || 1.1})`, // Aplica o zoom em todos os vídeos
             display: 'block'
           }} 
         />
