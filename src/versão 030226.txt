@@ -42,7 +42,7 @@ const MainSlider = memo(() => {
     { img: "/banner5.png", title: "MANUTENÇÃO", sub: "Assistência autorizada do seu relógio", fit: "contain" },
     { img: "/banner2.jpg", title: "SISTEMA DE PONTO WEB", sub: "Gestão na Nuvem", fit: "contain" },
     { img: "/banner3.jpg", title: "RECONHECIMENTO FACIAL", sub: "Mais Praticidade", fit: "cover" },
-    { img: "/banner4.jpg", title: "LEITORES MODERNOS", sub: "Alta Performance", fit: "contain" }
+    { img: "/banner4.jpg", title: "LEITORES MODERNOS", sub: "HOMOLOGADO E CONFORME PORTARIA 671. Não é Tablet, é registrador de ponto.", fit: "contain" }
   ];
 
   return (
@@ -81,8 +81,82 @@ const styles = {
   footerLink: { color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '14px', transition: '0.3s', cursor: 'pointer' },
   footerTitle: { fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: '#fff' }
 };
+// --- NOVO COMPONENTE PARA A FIGURINHA ---
+const BotaoFlutuante = ({ selectedProduct }) => { 
+  const location = useLocation();
+  // Se o caminho for '/sobre', não renderiza nada
+  if (location.pathname === '/sobre' || selectedProduct ) return null;
 
+  return (
+    <Link 
+      to="/sobre" 
+      style={{ 
+        position: 'fixed', 
+        bottom: '30px', 
+        left: '30px', 
+        zIndex: 9999, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        alignItems: 'center', 
+        textDecoration: 'none',
+        cursor: 'pointer'
+      }}
+    >
+      {/* BALÃO DE FALA */}
+      <div style={{
+        backgroundColor: '#12bdd5',
+        color: '#001a38',
+        padding: '8px 15px',
+        borderRadius: '20px',
+        fontSize: '14px',
+        fontWeight: 'bold',
+        marginBottom: '10px',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+        position: 'relative',
+        whiteSpace: 'nowrap'
+      }}>
+        Quer me conhecer?
+        {/* TRIÂNGULO DO BALÃO */}
+        <div style={{
+          position: 'absolute',
+          bottom: '-6px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: 0,
+          height: 0,
+          borderLeft: '6px solid transparent',
+          borderRight: '6px solid transparent',
+          borderTop: '6px solid #12bdd5'
+        }}></div>
+      </div>
+
+      {/* IMAGEM DA FIGURINHA */}
+      <img 
+        src="/figurinha.png" 
+        alt="Sobre Nós" 
+        className="img-zoom"
+        style={{ 
+          width: '85px', 
+          height: '85px', 
+          objectFit: 'cover',
+          borderRadius: '50%', // Isso força a imagem a ficar redonda mesmo se o fundo for quadrado
+          //backgroundColor: '#fff', // Cor de fundo caso a imagem não seja transparente
+          border: '3px solid #12bdd5', // Borda para dar acabamento
+          //boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+        }} 
+      />
+    </Link>
+  );
+};
 export default function App() {
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const [showSupportModal, setShowSupportModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -93,12 +167,19 @@ export default function App() {
       const titulos = {
         '/': "Opencom Tecnologia | Segurança e Ponto Eletrônico",
         '/relogios': "Relógios de Ponto Homologados - Opencom",
-        '/acesso': "Controle de Acesso e Fechaduras - Opencom",
+        '/acesso': "Controle de Acesso e softwares de controle - Opencom",
         '/softwares': "Softwares de Gestão de Ponto - Opencom",
         '/suprimentos': "Suprimentos e Acessórios - Opencom",
-        '/promocao' : "promoções - opencom"
+        '/servicos': "Serviços personalizados - opencom",
+        '/blog': "Central informativa - opencom"
       };
       document.title = titulos[location.pathname] || "Opencom Tecnologia";
+      // 2. Atualiza o Logo na Aba (Favicon)
+    const link = document.querySelector("link[rel~='icon']") || document.createElement('link');
+    link.rel = 'icon';
+    link.href = '/avatar.jpg'; // Certifique-se de que o seu logo tem este nome na pasta public
+    document.getElementsByTagName('head')[0].appendChild(link);
+    
     }, [location]);
     return null;
   };
@@ -107,6 +188,7 @@ export default function App() {
     <Router>
       <ScrollToTop />
       <PageTitleUpdater />
+      <BotaoFlutuante selectedProduct={selectedProduct} />
       <div style={styles.mainContainer}>
         <style>{`
            @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -120,7 +202,7 @@ export default function App() {
 
         {/* NAVIGATION (Modificado apenas para Link) */}
         <nav style={styles.nav}>
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+          <Link to="/" style={{ display: isMobile ? 'none' : 'flex', alignItems: 'center', textDecoration: 'none' }}>
             <img src="/logo.png" alt="Opencom Tecnologia" style={styles.logoImg} className="img-zoom" />
           </Link>
           <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
@@ -132,7 +214,8 @@ export default function App() {
             <Link style={styles.navBtn} to="/suprimentos">Suprimentos</Link>
             <Link style={styles.navBtn} to="/servicos">Serviços</Link>
             <Link style={styles.navBtn} to="/blog">Blog</Link>
-            <button style={styles.contactBtn} className="btn-hover" onClick={() => window.open('https://wa.me/5585991220790')}>Contato 📱</button>
+            <button style={styles.contactBtn} className="btn-hover" onClick={() => window.open('https://wa.me/5585991220790?text=Olá, gostaria de saber mais sobre as soluções da OpenCom')}>Contato 📱</button>
+            
           </div>
         </nav>
 
@@ -210,7 +293,10 @@ export default function App() {
             <div style={styles.textSide}>
               
               <h2 style={{ fontSize: '2.8rem', fontWeight: '800' }}>Certificado Digital</h2>
-              <p>Sua identidade eletrônica segura. Agende agora!</p>
+              <p>O certificado digital é sua identidade eletrônica, usada para assinar documentos, acessar sistemas do governo, emitir notas fiscais e garantir a
+                  segurança das suas transações online.</p>
+              <p>   Com a Open, você faz tudo de forma rápida, segura e com suporte especializado.
+                  Agende agora e facilite sua rotina com praticidade e confiança!</p>
               <button onClick={() => window.open('https://wa.me/5585991220790?text=Olá, gostaria de adquerir um certificado digital da Open.')} style={{ width: 'fit-content', padding: '15px 40px', borderRadius: '50px', backgroundColor: '#001a38', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }} className="btn-hover">Peça o seu agora</button>
             </div>
           </section>
@@ -257,7 +343,7 @@ export default function App() {
             <div className="img-zoom" style={{ ...styles.imgSide, backgroundImage: 'url("/nos.png")',backgroundSize: 'contain',backgroundPosition: 'center',backgroundRepeat: 'no-repeat' }}></div>
             <div style={styles.textSide}>
               
-              <h2 style={{ fontSize: '2.8rem', fontWeight: '800' }}>Nossos Valores</h2>
+              <h2 style={{ fontSize: '2.8rem', fontWeight: '800' }}>O Que Fazemos</h2>
               <p>Valorizamos .....</p>
             </div>
           </section>
@@ -266,19 +352,28 @@ export default function App() {
           <section style={styles.sectionDark}>
             <div style={styles.textSide}>
               <h2 style={{ fontSize: '2.8rem', fontWeight: '800' }}>Nossa Missão</h2>
-              <p>Nossa missão é ..............</p>
+              <p>Contribuir para que empresas possam melhorar seu desempenho através de soluções em tecnologia.</p>
             </div>
             <div className="img-zoom" style={{ ...styles.imgSide, backgroundImage: 'url("/nos.png")' }}></div>
           </section>
 
-          {/* SEÇÃO Final */}
+          {/* SEÇÃO VISÃO */}
           <section style={styles.sectionLight}>
             <div className="img-zoom" style={{ ...styles.imgSide, backgroundImage: 'url("/nos.png")' }}></div>
             <div style={styles.textSide}>
               
-              <h2 style={{ fontSize: '2.8rem', fontWeight: '800' }}>O Que Vendemos</h2>
-              <p>Vendemos Solução e não produto ........</p>
+              <h2 style={{ fontSize: '2.8rem', fontWeight: '800' }}>Nossa Visão</h2>
+              <p>Ser reconhecida como empresa referência em soluções tecnológicas para empresas de todos os portes.</p>
             </div>
+          </section>
+
+          {/* SEÇÃO valores */}
+          <section style={styles.sectionDark}>
+            <div style={styles.textSide}>
+              <h2 style={{ fontSize: '2.8rem', fontWeight: '800' }}>Nossos Valores</h2>
+              <p>Respeito - Humildade - Empatia - Educação - Ética - Parceria - Sustentabilidade.</p>
+            </div>
+            <div className="img-zoom" style={{ ...styles.imgSide, backgroundImage: 'url("/nos.png")' }}></div>
           </section>
         </div>
           } />
@@ -288,7 +383,7 @@ export default function App() {
             <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
           <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
             <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Relógios de Ponto</h1>
-            <p style={{ opacity: 0.8, marginTop: '10px' }}>Equipamentos homologados pela Portaria 671 do MTP</p>
+            <p style={{ opacity: 0.8, marginTop: '10px' }}>Qualidade e garantia, para que você tenha a tranquilidade e confiança necessárias para focar no que realmente importa: o sucesso do seu negócio.</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
                  {[
@@ -383,7 +478,7 @@ export default function App() {
         <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
           <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
             <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Controle de Acesso</h1>
-            <p style={{ opacity: 0.8, marginTop: '10px' }}>Segurança e tecnologia para restringir e monitorar ambientes</p>
+            <p style={{ opacity: 0.8, marginTop: '10px' }}>Soluções inteligentes para garantir a proteção e tranquilidade que seu empreendimento merece.</p>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
@@ -481,7 +576,7 @@ export default function App() {
         <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
           <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
             <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Controle de Ponto</h1>
-            <p style={{ opacity: 0.8, marginTop: '10px' }}>Segurança e tecnologia para restringir e monitorar ambientes</p>
+            <p style={{ opacity: 0.8, marginTop: '10px' }}>Otimize a gestão de ponto da sua empresa com a solução mais eficiente e prática do mercado. Controle simplificado, resultados garantidos.</p>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
@@ -554,8 +649,9 @@ export default function App() {
         /* --- PÁGINA DE SUPRIMENTOS --- */
         <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
           <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
-            <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Suprimentos Para Ponto,Acesso,Segurança e Escritório.</h1>
-            <p style={{ opacity: 0.8, marginTop: '10px' }}>Segurança e tecnologia para restringir e monitorar ambientes</p>
+            <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Suprimentos Para Ponto,Acesso e Segurança.</h1>
+            <p style={{ opacity: 0.8, marginTop: '10px' }}>Encontre os suprimentos que você precisa com qualidade e agilidade. Oferecemos uma ampla variedade de produtos para atender suas
+              demandas, garantindo excelência e praticidade em cada compra.</p>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
@@ -635,7 +731,7 @@ export default function App() {
         <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
           <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
             <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Nossos Serviços</h1>
-            <p style={{ opacity: 0.8, marginTop: '10px' }}>Equipamentos homologados pela Portaria 671 do MTP</p>
+            <p style={{ opacity: 0.8, marginTop: '10px' }}>Na Opencom Tecnologia, estamos prontos para simplificar processos e garantir resultados.</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
             {[
@@ -834,7 +930,9 @@ export default function App() {
               Especialistas em segurança eletrônica e ponto eletrônico.
             </p>
             <p style={{ fontSize: '14px', lineHeight: '1.6', color: 'rgba(255,255,255,0.7)' }}>
-              Missão: Contribuir para que empresas melhorem seu desempenho através de soluções em tecnologia.
+              Na Opencom Tecnologia estamos comprometidos em oferecer soluções inovadoras e de qualidade.
+              Com uma equipe dedicada, proporcionamos excelência em Relógios de Ponto, Controle de Acesso, Suporte Técnico e Suprimentos,
+              assegurando que nossos clientes tenham a base tecnológica essencial para alcançar seus objetivos com eficiência e segurança.
             </p>
           </div>
           <div style={styles.footerColumn}>
@@ -860,16 +958,7 @@ export default function App() {
           OPENCOM TECNOLOGIA © 2026 - Todos os direitos reservados. Created by Opencom Tecnologia.
         </div>
       </footer>
-
-        {/* MODAL SUPORTE (Original) */}
-        {showSupportModal && (
-          <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 5000, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '15px' }}>
-              <h3 style={{ color: '#002147' }}>Qual suporte você precisa?</h3>
-              <button onClick={() => setShowSupportModal(false)}>Fechar</button>
-            </div>
-          </div>
-        )}
+       
       </div>
     </Router>
   );

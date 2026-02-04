@@ -130,19 +130,23 @@ const BotaoFlutuante = ({ selectedProduct }) => {
         }}></div>
       </div>
 
-      {/* IMAGEM DA FIGURINHA */}
-      <img 
-        src="/figurinha.png" 
-        alt="Sobre Nós" 
+      {/* VÍDEO DO BONECO (Substituindo a Imagem) */}
+      <video 
+        src="/boneco.mp4" 
+        autoPlay 
+        loop 
+        muted 
+        playsInline
         className="img-zoom"
         style={{ 
-          width: '85px', 
-          height: '85px', 
+          width: '80px', 
+          height: '80px', 
           objectFit: 'cover',
-          borderRadius: '50%', // Isso força a imagem a ficar redonda mesmo se o fundo for quadrado
-          //backgroundColor: '#fff', // Cor de fundo caso a imagem não seja transparente
-          border: '3px solid #12bdd5', // Borda para dar acabamento
-          //boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+          transform: 'scale(1.3)',
+          borderRadius: '50%', 
+          border: '3px solid #12bdd5',
+          backgroundColor: '#000' // Fundo preto para combinar com o boneco
+          
         }} 
       />
     </Link>
@@ -198,6 +202,7 @@ export default function App() {
            .img-zoom:hover { transform: scale(1.05); }
            .footer-link:hover { color: #12bdd5 !important; padding-left: 5px; }
            .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important; }
+
         `}</style>
 
         {/* NAVIGATION (Modificado apenas para Link) */}
