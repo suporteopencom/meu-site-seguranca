@@ -371,8 +371,18 @@ export default function App() {
           {/* ROTA: SOBRE NÓS (Mantendo sua estrutura) */}
           <Route path="/sobre" element={
             <div style={{ animation: 'fadeIn 0.6s ease-out' }}>
-              <div style={{ backgroundColor: '#002147', color: 'white', padding: '100px 5%', textAlign: 'center' }}>
-                <h1 style={{ fontSize: '3.5rem', fontWeight: '900' }}>Nossa História</h1>
+              <div style={{ 
+            backgroundColor: '#002147', 
+            color: 'white', 
+            padding: '20px 5%', 
+            minHeight: '115px', // Altura reduzida
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            position: 'relative',
+            overflow: 'visible' 
+          }}>
+                <h1 style={{ fontSize: '2.5rem', fontWeight: '900' }}>Nossa História</h1>
               </div>
               {/* Conteúdo começo */}
               <section style={styles.sectionLight}>
@@ -452,35 +462,13 @@ export default function App() {
             backgroundColor: '#002147', 
             color: 'white', 
             padding: '20px 5%', 
-            minHeight: '165px', // Altura reduzida
+            minHeight: '115px', // Altura reduzida
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center', 
             position: 'relative',
             overflow: 'visible' 
           }}>
-            
-            {/* CONTAINER DO AVATAR (Posicionado absolutamente para não mover o texto) */}
-            <div style={{
-              position: 'absolute',
-              left: isMobile ? '10px' : '20%', // Fica na esquerda
-              bottom: '-10px', // Encosta na base
-              width: isMobile ? '100px' : '180px',
-              zIndex: 10
-            }}>
-              <video 
-                src="/bonecorelogio4.mp4" 
-                autoPlay loop muted playsInline 
-                style={{
-                  width: '100%',
-                  display: 'block',
-                  // O EFEITO 3D: Sobe para fora da borda superior
-                  transform: isMobile ? 'translateX (0px)' : 'translateY(35Px) scale(0.7)', 
-                  filter: 'drop-shadow(10px 10px 20px rgba(0,0,0,0.5))',
-                  pointerEvents: 'none'
-                }}
-              />
-            </div>
 
             {/* BLOCO DE TEXTO (CENTRALIZADO NO MEIO DA PÁGINA) */}
             <div style={{ 
@@ -494,7 +482,7 @@ export default function App() {
                 margin: 0,
                 lineHeight: '1.1' 
               }}>
-                RELÓGIOS DE <br/> PONTO
+                RELÓGIOS DE PONTO
               </h1>
               <p style={{ 
                 opacity: 0.8, 
@@ -627,7 +615,7 @@ export default function App() {
             backgroundColor: '#002147', 
             color: 'white', 
             padding: '20px 5%', 
-            minHeight: '165px', // Altura reduzida
+            minHeight: '115px', // Altura reduzida
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center', 
@@ -635,28 +623,6 @@ export default function App() {
             overflow: 'visible' 
           }}>
             
-            {/* CONTAINER DO AVATAR (Posicionado absolutamente para não mover o texto) */}
-            <div style={{
-              position: 'absolute',
-              left: isMobile ? '10px' : '15%', // Fica na esquerda
-              bottom: '-10px', // Encosta na base
-              width: isMobile ? '100px' : '180px',
-              zIndex: 10
-            }}>
-              <video 
-                src="/bonecoacesso3.mp4" 
-                autoPlay loop muted playsInline 
-                style={{
-                  width: '100%',
-                  display: 'block',
-                  // O EFEITO 3D: Sobe para fora da borda superior
-                  transform: isMobile ? 'translateX (0px)' : 'translateY(35Px) scale(0.7)', 
-                  filter: 'drop-shadow(10px 10px 20px rgba(0,0,0,0.5))',
-                  pointerEvents: 'none'
-                }}
-              />
-            </div>
-
             {/* BLOCO DE TEXTO (CENTRALIZADO NO MEIO DA PÁGINA) */}
             <div style={{ 
               textAlign: 'center', 
@@ -669,7 +635,7 @@ export default function App() {
                 margin: 0,
                 lineHeight: '1.1' 
               }}>
-                CONTROLE DE <br/> ACESSO
+                CONTROLE DE ACESSO
               </h1>
               <p style={{ 
                 opacity: 0.8, 
@@ -774,7 +740,7 @@ export default function App() {
             backgroundColor: '#002147', 
             color: 'white', 
             padding: isMobile ? '40px 5%' : '0 5%', 
-            minHeight: '200px', // Tamanho padrão do Blog
+            minHeight: '150px', // Tamanho padrão do Blog
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center', 
@@ -783,7 +749,7 @@ export default function App() {
           }}>
             <div style={{ textAlign: 'center', zIndex: 5 }}>
             <h1 style={{ fontSize: isMobile ? '1.8rem' : '2.5rem', fontWeight: '900', margin: 0 }}>
-              CONTROLE DE <br/> PONTO.
+              CONTROLE DE <br/> PONTO
             </h1>
             <p style={{ opacity: 0.8, marginTop: '5px', fontSize: '1.0rem' }}>
               Otimize a gestão de ponto da sua empresa com a solução mais eficiente e prática do mercado. Controle simplificado, resultados garantidos.
@@ -864,7 +830,7 @@ export default function App() {
             backgroundColor: '#002147', 
             color: 'white', 
             padding: isMobile ? '40px 5%' : '0 5%', 
-            minHeight: '200px', // Tamanho padrão do Blog
+            minHeight: '150px', // Tamanho padrão do Blog
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center', 
@@ -941,7 +907,7 @@ export default function App() {
             backgroundColor: '#002147', 
             color: 'white', 
             padding: isMobile ? '40px 5%' : '0 5%', 
-            minHeight: '200px', // Tamanho padrão do Blog
+            minHeight: '150px', // Tamanho padrão do Blog
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center', 
@@ -950,11 +916,10 @@ export default function App() {
           }}>
             <div style={{ textAlign: 'center', zIndex: 5 }}>
             <h1 style={{ fontSize: isMobile ? '1.8rem' : '2.5rem', fontWeight: '900', margin: 0 }}>
-              SUPRIMENTOS PARA PONTO <br/> ACESSO E SEGURANÇA.
+              SUPRIMENTOS
             </h1>
             <p style={{ opacity: 0.8, marginTop: '5px', fontSize: '1.0rem' }}>
-              Encontre os suprimentos que você precisa com qualidade e agilidade. Oferecemos uma ampla variedade de produtos para atender suas
-              demandas, garantindo excelência e praticidade em cada compra.
+              Tudo que você precisa para sua empresa esta aqui.
             </p>
           </div>
           </div>
@@ -1063,7 +1028,7 @@ export default function App() {
             backgroundColor: '#002147', 
             color: 'white', 
             padding: isMobile ? '20px 5%' : '0 5%', 
-            minHeight: isMobile ? '120px' : '200px', // Reduzido de 220px para 150px
+            minHeight: isMobile ? '120px' : '150px', // Reduzido de 220px para 150px
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center', 
@@ -1073,9 +1038,9 @@ export default function App() {
           }}>
           <div style={{ textAlign: isMobile ? 'center' : 'center', flex: 1 }}>
             <h1 style={{ fontSize: isMobile ? '1.8rem' : '2.5rem', fontWeight: '900', margin: 0, lineHeight: '1' }}>
-              NOSSOS <br /> SERVIÇOS
+              SERVIÇOS
             </h1>
-            <p style={{ opacity: 0.8, marginTop: '5px', fontSize: '1rem' }}>Na Opencom Tecnologia, estamos prontos para simplificar processos e garantir resultados.</p>
+            <p style={{ opacity: 0.8, marginTop: '5px', fontSize: '1rem' }}>Estamos prontos para atender a sua demanda, conte com a gente.</p>
           </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
