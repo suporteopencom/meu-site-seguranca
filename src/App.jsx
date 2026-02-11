@@ -38,11 +38,10 @@ const CountdownTimer = ({ targetDate }) => {
 // --- COMPONENTE DO SLIDER PRINCIPAL (Original) ---
 const MainSlider = memo(() => {
   const slides = [
-    { img: "/banner0.jpg", title: "PROJETOS PERSONALIZADOS", sub: "Segurança Inteligente" , fit: "cover"},
-    { img: "/banner5.png", title: "MANUTENÇÃO", sub: "Assistência autorizada do seu relógio", fit: "contain" },
-    { img: "/banner2.jpg", title: "SISTEMA DE PONTO WEB", sub: "Gestão na Nuvem", fit: "contain" },
-    { img: "/banner3.jpg", title: "RECONHECIMENTO FACIAL", sub: "Mais Praticidade", fit: "cover" },
-    { img: "/banner4.jpg", title: "LEITORES MODERNOS", sub: "HOMOLOGADO E CONFORME PORTARIA 671. Não é Tablet, é registrador de ponto.", fit: "contain" }
+    { img: "/banner0.jpg", title: "PROJETOS PERSONALIZADOS", sub: "Segurança Inteligente" ,backgroundSize: '150%',backgroundPosition: 'center',backgroundRepeat: 'no-repeat'},
+    { img: "/bannermanutencao.jpg", title: "MANUTENÇÃO", sub: "Assistência autorizada do seu relógio",backgroundSize: '180%',backgroundPosition: 'center',backgroundRepeat: 'no-repeat'},
+    { img: "/bannersistema.jpg", title: "SISTEMA DE PONTO WEB", sub: "Gestão na Nuvem",backgroundSize: '150%',backgroundPosition: 'center',backgroundRepeat: 'no-repeat' },
+    { img: "/bannerreconhecimento.jpg", title: "RECONHECIMENTO FACIAL", sub: "Mais Praticidade", fit: "cover" },
   ];
 
   return (
@@ -69,7 +68,7 @@ const styles = {
   nav: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 3%', height: '80px', backgroundColor: 'rgba(0, 0, 0, 0.85)', backdropFilter: 'blur(8px)', borderBottom: '2px solid #12bdd5', position: 'sticky', top: 0, zIndex: 2000, width: '100%', boxSizing: 'border-box', boxShadow: '0 4px 15px rgba(0,0,0,0.3)' },
   navBtn: { backgroundColor: 'transparent', border: 'none', color: '#ffffff', fontWeight: '600', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', textTransform: 'uppercase', transition: '0.3s', textDecoration: 'none' },
   contactBtn: { color: '#fff', backgroundColor: '#12bdd5', padding: '10px 18px', borderRadius: '5px', fontWeight: '700', border: 'none', cursor: 'pointer', fontSize: '14px', transition: '0.3s' },
-  logoImg: { height: '100px', cursor: 'pointer', transition: '0.5s', display: 'block' },
+  logoImg: { height: '46px', cursor: 'pointer', transition: '0.5s', display: 'block' },
   sectionDark: { display: 'flex', flexWrap: 'wrap', backgroundColor: '#001a38', color: 'white', minHeight: '500px', overflow: 'hidden' },
   sectionLight: { display: 'flex', flexWrap: 'wrap', backgroundColor: '#ffffff', color: '#002147', minHeight: '500px', overflow: 'hidden' },
   textSide: { flex: '1 1 500px', padding: '80px 7%', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'left' },
@@ -80,12 +79,24 @@ const styles = {
   footerColumn: { display: 'flex', flexDirection: 'column', gap: '15px' },
   footerLink: { color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '14px', transition: '0.3s', cursor: 'pointer' },
   footerTitle: { fontSize: '18px', fontWeight: 'bold', marginBottom: '10px', color: '#fff' }
+  
+};
+const dropdownItemStyle = {
+  color: '#002147',
+  padding: '12px 20px',
+  textDecoration: 'none',
+  display: 'block',
+  fontSize: '14px',
+  fontWeight: '600',
+  transition: '0.3s',
+  borderBottom: '1px solid #f0f0f0'
 };
 // --- NOVO COMPONENTE PARA A FIGURINHA ---
 const BotaoFlutuante = ({ selectedProduct }) => { 
   const location = useLocation();
   // Se o caminho for '/sobre', não renderiza nada
   if (location.pathname === '/sobre' || selectedProduct ) return null;
+
 
   return (
     <Link 
@@ -204,24 +215,63 @@ export default function App() {
            .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important; }
 
         `}</style>
+        <style>{`
+  .dropdown:hover .dropdown-content {
+    display: block !important;
+    animation: fadeInDropdown 0.3s ease;
+  }
+  @keyframes fadeInDropdown {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .dropdown-link:hover {
+    background-color: #f4f7f9 !important;
+    color: #12bdd5 !important;
+  }
+`}</style>
 
         {/* NAVIGATION (Modificado apenas para Link) */}
         <nav style={styles.nav}>
           <Link to="/" style={{ display: isMobile ? 'none' : 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <img src="/logo.png" alt="Opencom Tecnologia" style={styles.logoImg} className="img-zoom" />
+            <img src="/logo1.png" alt="Opencom Tecnologia" style={styles.logoImg} className="img-zoom" />
           </Link>
           <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-            <Link style={styles.navBtn} to="/">Início</Link>
-            <Link style={styles.navBtn} to="/sobre">Sobre Nós</Link>
-            <Link style={styles.navBtn} to="/relogios">Relógios</Link>
-            <Link style={styles.navBtn} to="/acesso">Acesso</Link>
-            <Link style={styles.navBtn} to="/softwares">Software de ponto</Link>
-            <Link style={styles.navBtn} to="/suprimentos">Suprimentos</Link>
-            <Link style={styles.navBtn} to="/servicos">Serviços</Link>
-            <Link style={styles.navBtn} to="/blog">Blog</Link>
-            <button style={styles.contactBtn} className="btn-hover" onClick={() => window.open('https://wa.me/5585991220790?text=Olá, gostaria de saber mais sobre as soluções da OpenCom')}>Contato 📱</button>
+          <Link style={styles.navBtn} to="/">Início</Link>
+          <Link style={styles.navBtn} to="/sobre">Sobre Nós</Link>
+          <Link style={styles.navBtn} to="/relogios">Relógios</Link>
+          <Link style={styles.navBtn} to="/acesso">Acesso</Link>
+
+          {/* MENU DROPDOWN PARA SOFTWARES */}
+          <div className="dropdown" style={{ position: 'relative', display: 'inline-block' }}>
+            <span style={{ ...styles.navBtn, cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+              Softwares <span style={{ fontSize: '0.8rem', marginLeft: '5px' }}>▼</span>
+            </span>
             
+            <div className="dropdown-content" style={{
+              display: 'none',
+              position: 'absolute',
+              backgroundColor: '#ffffff',
+              minWidth: '200px',
+              boxShadow: '0px 8px 16px #12bdd5',
+              borderRadius: '8px',
+              zIndex: 1000,
+              top: '100%',
+              left: '0',
+              padding: '10px 0'
+            }}>
+              <Link style={dropdownItemStyle} to="/sistema acesso">Software de Acesso</Link>
+              <Link style={dropdownItemStyle} to="/sistema ponto">Software de Ponto</Link>
+            </div>
           </div>
+
+          <Link style={styles.navBtn} to="/suprimentos">Suprimentos</Link>
+          <Link style={styles.navBtn} to="/servicos">Serviços</Link>
+          <Link style={styles.navBtn} to="/blog">Blog</Link>
+          
+          <button style={styles.contactBtn} className="btn-hover" onClick={() => window.open('https://wa.me/5585991220790')}>
+            Contato 📱
+          </button>
+        </div>
         </nav>
 
         <Routes>
@@ -233,7 +283,7 @@ export default function App() {
               <section style={styles.sectionLight}>
                 <div style={{ ...styles.imgSide, position: 'relative', overflow: 'hidden' }}>
                   <Swiper modules={[Autoplay, Pagination]} autoplay={{ delay: 3000 }} loop style={{ height: '100%' }}>
-                    <SwiperSlide><div className="img-zoom" style={{ height: '100%', backgroundImage: 'url("/suporte.jpg")', backgroundSize: 'cover' }}></div></SwiperSlide>
+                    <SwiperSlide><div className="img-zoom" style={{ height: '100%', backgroundImage: 'url("/suporte.jpg")', backgroundSize: '147%',backgroundPosition: 'center',backgroundRepeat: 'no-repeat' }}></div></SwiperSlide>
             
                   </Swiper>
                 </div>
@@ -245,11 +295,17 @@ export default function App() {
     <p style={{ fontSize: '1.2rem', color: '#444', marginBottom: '25px', lineHeight: '1.6' }}>
       Na Opencom Tecnologia, simplificamos processos para garantir resultados. Nossa equipe está pronta para oferecer:
     </p>
-    <ul style={{ listStyle: 'none', padding: 0, fontSize: '1.1rem', color: '#002147', fontWeight: '600' }}>
-      <li style={{ marginBottom: '10px' }}>✔️ Manutenção Preventiva & Corretiva</li>
-      <li style={{ marginBottom: '10px' }}>✔️ Treinamento Operacional Completo</li>
-      <li style={{ marginBottom: '10px' }}>✔️ Atendimento Rápido e Eficiente</li>
-    </ul>
+    <ul style={{ 
+  listStyle: 'disc', // Define o ponto como marcador
+  paddingLeft: '20px', // Espaço para o ponto não ficar fora da tela
+  fontSize: '1.1rem', 
+  color: '#002147', 
+  fontWeight: '600' 
+}}>
+  <li style={{ marginBottom: '10px' }}>Manutenção Preventiva & Corretiva</li>
+  <li style={{ marginBottom: '10px' }}>Treinamento Operacional Completo</li>
+  <li style={{ marginBottom: '10px' }}>Atendimento Rápido e Eficiente</li>
+</ul>
     <button 
       onClick={() => window.open('https://wa.me/5585982307968?text=Olá, Preciso de ajuda técnica rápida e eficiente.')}
       style={{ width: 'fit-content', padding: '15px 40px', borderRadius: '50px', border: '2px solid #001a38', backgroundColor: '#001a38', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }} 
@@ -265,19 +321,22 @@ export default function App() {
             <div style={styles.textSide}>
               
               <h2 style={{ fontSize: '2.8rem', fontWeight: '800' }}>Suprimentos</h2>
-              <p>Qualidade e praticidade para sua empresa.</p>
+              <p>Suprimentos e acessórios essenciais para garantir o funcionamento contínuo e eficiente dos seus equipamentos,
+                com qualidade, praticidade e suporte especializado.</p>
                <Link to="/suprimentos" style={{ width: 'fit-content', padding: '15px 35px', borderRadius: '50px', backgroundColor: '#12bdd5', border: 'none', fontWeight: 'bold', cursor: 'pointer',color: '#000000', textDecoration:'none', display: 'inLine-blok' }} className="btn-hover">Ver Suprimentos</Link>
             </div>
-            <div className="img-zoom" style={{ ...styles.imgSide, backgroundImage: 'url("/suprimentos.png")' }}></div>
+            <div className="img-zoom" style={{ ...styles.imgSide, backgroundImage: 'url("/suprimentos1.jpg")',backgroundSize: '170%',backgroundPosition: 'center',backgroundRepeat: 'no-repeat' }}></div>
           </section>
 
           {/* SEÇÃO PROJETOS ACADEMIA */}
           <section style={styles.sectionLight}>
-            <div className="img-zoom" style={{ ...styles.imgSide, backgroundImage: 'url("/projetofacial.jpg")',backgroundSize: 'contain',backgroundPosition: 'center',backgroundRepeat: 'no-repeat' }}></div>
+            <div className="img-zoom" style={{ ...styles.imgSide, backgroundImage: 'url("/acessofacial.jpg")',backgroundSize: '160%',backgroundPosition: 'center',backgroundRepeat: 'no-repeat' }}></div>
             <div style={styles.textSide}>
               
-              <h2 style={{ fontSize: '2.8rem', fontWeight: '800' }}>Projetos Academia</h2>
-              <p>Atualize a sua catraca para facial!</p>
+              <h2 style={{ fontSize: '2.8rem', fontWeight: '800' }}>Acesso Facial</h2>
+              <p>Solução moderna e segura para academias, prédios comerciais e empresas. 
+                O acesso por reconhecimento facial elimina filas, aumenta a segurança e permite o controle eficiente da entrada e saída de pessoas, 
+                com integração a sistemas de gestão e relatórios em tempo real.</p>
               <button onClick={() => window.open('https://wa.me/5585991220790?text=Olá, gostaria de saber mais sobre o projeto academia da Open.')} style={{ width: 'fit-content', padding: '15px 40px', borderRadius: '50px', backgroundColor: '#001a38', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }} className="btn-hover">Peça o seu agora</button>
             </div>
           </section>
@@ -286,10 +345,11 @@ export default function App() {
           <section style={styles.sectionDark}>
             <div style={styles.textSide}>
               <h2 style={{ fontSize: '2.8rem', fontWeight: '800' }}>Cancelas e Torniquetes</h2>
-              <p>Organize entradas e saídas com máxima segurança.</p>
+              <p>Controle de acesso com cancelas e torniquetes que oferecem segurança, 
+                organização e automação no fluxo de pessoas e veículos, com integração a sistemas e suporte especializado.</p>
               <button onClick={() => window.open('https://wa.me/5585991220790?text=Olá, gostaria de saber mais sobre projetos de cancelas e totens da Open.')} style={{ width: 'fit-content', padding: '15px 35px', borderRadius: '50px', backgroundColor: '#12bdd5', border: 'none', fontWeight: 'bold', cursor: 'pointer' }} className="btn-hover">Orçamento Personalizado</button>
             </div>
-            <div className="img-zoom" style={{ ...styles.imgSide, backgroundImage: 'url("/cancela.png")' }}></div>
+            <div className="img-zoom" style={{ ...styles.imgSide, backgroundImage: 'url("/cancela.jpg")',backgroundSize: '174%',backgroundPosition: 'center',backgroundRepeat: 'no-repeat' }}></div>
           </section>
 
           {/* SEÇÃO CERTIFICADO DIGITAL */}
@@ -384,11 +444,69 @@ export default function App() {
           } />
 
           {/* ROTA: RELÓGIOS (Mantendo sua estrutura de produtos) */}
-          <Route path="/relogios" element={
-            <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
-          <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
-            <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Relógios de Ponto</h1>
-            <p style={{ opacity: 0.8, marginTop: '10px' }}>Qualidade e garantia, para que você tenha a tranquilidade e confiança necessárias para focar no que realmente importa: o sucesso do seu negócio.</p>
+         <Route path="/relogios" element={
+        <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
+          
+          {/* CABEÇALHO COMPACTO E CENTRALIZADO */}
+          <div style={{ 
+            backgroundColor: '#002147', 
+            color: 'white', 
+            padding: '20px 5%', 
+            minHeight: '165px', // Altura reduzida
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            position: 'relative',
+            overflow: 'visible' 
+          }}>
+            
+            {/* CONTAINER DO AVATAR (Posicionado absolutamente para não mover o texto) */}
+            <div style={{
+              position: 'absolute',
+              left: isMobile ? '10px' : '20%', // Fica na esquerda
+              bottom: '-10px', // Encosta na base
+              width: isMobile ? '100px' : '180px',
+              zIndex: 10
+            }}>
+              <video 
+                src="/bonecorelogio4.mp4" 
+                autoPlay loop muted playsInline 
+                style={{
+                  width: '100%',
+                  display: 'block',
+                  // O EFEITO 3D: Sobe para fora da borda superior
+                  transform: isMobile ? 'translateX (0px)' : 'translateY(35Px) scale(0.7)', 
+                  filter: 'drop-shadow(10px 10px 20px rgba(0,0,0,0.5))',
+                  pointerEvents: 'none'
+                }}
+              />
+            </div>
+
+            {/* BLOCO DE TEXTO (CENTRALIZADO NO MEIO DA PÁGINA) */}
+            <div style={{ 
+              textAlign: 'center', 
+              maxWidth: '800px', 
+              zIndex: 5 
+            }}>
+              <h1 style={{ 
+                fontSize: isMobile ? '1.8rem' : '2.5rem', 
+                fontWeight: '900', 
+                margin: 0,
+                lineHeight: '1.1' 
+              }}>
+                RELÓGIOS DE <br/> PONTO
+              </h1>
+              <p style={{ 
+                opacity: 0.8, 
+                marginTop: '5px', 
+                fontSize: isMobile ? '0.85rem' : '1rem',
+                marginRight: 'auto',
+                marginLeft: 'auto'
+              }}>
+                Qualidade e garantia para o sucesso do seu negócio.
+              </p>
+            </div>
+
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
                  {[
@@ -503,72 +621,65 @@ export default function App() {
           <Route path="/acesso" element={
         /* --- PÁGINA DE CONTROLE DE ACESSO --- */
         <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
-          <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
-            <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Controle de Acesso</h1>
-            <p style={{ opacity: 0.8, marginTop: '10px' }}>Soluções inteligentes para garantir a proteção e tranquilidade que seu empreendimento merece.</p>
+          <div style={{ 
+            backgroundColor: '#002147', 
+            color: 'white', 
+            padding: isMobile ? '40px 5%' : '0 5%', 
+            minHeight: '200px', // Tamanho padrão do Blog
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            position: 'relative',
+            overflow: 'visible' 
+          }}>
+            <div style={{ textAlign: 'center', zIndex: 5 }}>
+            <h1 style={{ fontSize: isMobile ? '1.8rem' : '2.5rem', fontWeight: '900', margin: 0 }}>
+              CONTROLE DE <br/> ACESSO
+            </h1>
+            <p style={{ opacity: 0.8, marginTop: '5px', fontSize: '1rem' }}>
+              Soluções inteligentes para garantir a proteção e tranquilidade que seu empreendimento merece.
+            </p>
+          </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
             {[
-              { 
-                id: 'acesso 1', 
-                nome: "Sistema IDSecure", 
-                img: "/idsecure.jfif", 
-                zoom: "1.4",
-                desc: "Gestão completa de portas e usuários.", 
-                detalhes: "Capacidade para controlar múltiplos leitores e fechaduras. Comunicação via rede e software de gestão integrado.", 
-                specs: ["Display Touchscreen", "Biometria/Senha/Cartão", "Web Server", "Até 15.000 usuários"] 
-              },
-              
-              { 
-                id: 'acesso 3', 
-                nome: "Sistema SECULLUM ACESSO", 
-                img: "/secullumacesso.jfif", 
-                zoom: "1.2",
-                desc: "Acesso rápido via cartão ou chaveiro.", 
+              { id: 'acesso 3', 
+                nome: "Catraca Henry Lumen facial", 
+                img: "/catracahenry.png", 
+                desc: "Acesso rápido com 1 ou 2 faciais.", 
                 detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
                 specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
               },
-              { 
-                id: 'acesso 2', 
-                nome: "Fechadura Eletroímã", 
-                img: "/fechadura.jpg", 
-                desc: "Força de tração de até 300kg.", 
-                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
-                specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
-              },
-              { 
-                id: 'acesso 4', 
+              { id: 'acesso 1', 
                 nome: "Catraca Topdata Facial 4", 
                 img: "/catracatopdatafacial.jpg", 
-                desc: "Acesso rápido via cartão ou chaveiro.", 
+                desc: "Acesso rápido com 1 ou 2 faciais.", 
                 detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
                 specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
               },
-              { 
-                id: 'acesso 5', 
-                nome: "Catraca Control ID 1 Facial", 
-                img: "/catracacontrolid1facial.jpg", 
-                desc: "Acesso rápido via cartão ou chaveiro.", 
-                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
-                specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
-              },
-              { 
-                id: 'acesso 6', 
-                nome: "Catraca Control ID 2 Facial", 
+              { id: 'acesso 6', 
+                nome: "Catraca Control ID 1 ou 2 Faciais", 
                 img: "/catracacontrolid2facial.jpg", 
                 desc: "Acesso rápido via cartão ou chaveiro.", 
                 detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
                 specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
               },
-              { 
-                id: 'acesso 7', 
+              { id: 'acesso 7', 
                 nome: "Facial ID Face", 
                 img: "/idface.jpg", 
                 desc: "Acesso rápido via cartão ou chaveiro.", 
                 detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
                 specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
               },
+              { id: 'acesso 2', 
+                nome: "Fechadura Eletroímã", 
+                img: "/fechadura.jpg", 
+                desc: "Força de tração de até 300kg.", 
+                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
+              },
+
             ].map((prod) => (
               <div key={prod.id} className="product-card" onClick={() => setSelectedProduct(prod)} style={{ backgroundColor: 'white', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', cursor: 'pointer', transition: '0.3s' }}>
                 <div style={{ height: '220px', overflow: 'hidden', backgroundColor: '#fff' }}>
@@ -616,7 +727,7 @@ export default function App() {
         </div>
         } />
 
-         <Route path="/softwares" element={
+         <Route path="/sistema ponto" element={
         /* --- PÁGINA DE SOFTWARE DE PONTO --- */
         <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
           <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
@@ -690,13 +801,90 @@ export default function App() {
         </div>
          } />
 
+         <Route path="/sistema acesso" element={
+        /* --- PÁGINA DE SOFTWARE DE PONTO --- */
+        <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
+          <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
+            <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Controle de Acesso</h1>
+            <p style={{ opacity: 0.8, marginTop: '10px' }}>Otimize a gestão de acesso da sua empresa com a solução mais eficiente e prática do mercado. Controle simplificado, resultados garantidos.</p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
+            {[
+              { 
+                id: 'Sacesso 1', 
+                nome: "Sistema IDSecure", 
+                img: "/idsecure.jfif", 
+                zoom: "1.4",
+                desc: "Gestão completa de portas e usuários.", 
+                detalhes: "Capacidade para controlar múltiplos leitores e fechaduras. Comunicação via rede e software de gestão integrado.", 
+                specs: ["Display Touchscreen", "Biometria/Senha/Cartão", "Web Server", "Até 15.000 usuários"] 
+              },
+              
+              { 
+                id: 'Sacesso 3', 
+                nome: "Sistema SECULLUM ACESSO", 
+                img: "/secullumacesso.jfif", 
+                zoom: "1.2",
+                desc: "Acesso rápido via cartão ou chaveiro.", 
+                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
+                specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
+              },
+            ].map((prod) => (
+              <div key={prod.id} className="product-card" onClick={() => setSelectedProduct(prod)} style={{ backgroundColor: 'white', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', cursor: 'pointer', transition: '0.3s' }}>
+                <div style={{ height: '220px', backgroundImage: `url(${prod.img})`, backgroundSize: 'contain',backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
+                <div style={{ padding: '25px' }}>
+                  <h3 style={{ color: '#002147', marginBottom: '10px' }}>{prod.nome}</h3>
+                  <p style={{ fontSize: '14px', color: '#666', marginBottom: '20px' }}>{prod.desc}</p>
+                  <span style={{ color: '#12bdd5', fontWeight: 'bold' }}>Ver Detalhes +</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: '40px' }}>
+          </div>
+
+          {selectedProduct && (
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
+              <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '800px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
+                <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer' }}>X</button>
+                <div style={{ flex: '1 1 350px', minHeight: '350px', backgroundImage: `url(${selectedProduct.img})`, backgroundSize: 'cover' }} />
+                <div style={{ flex: '1 1 350px', padding: '40px' }}>
+                  <h2 style={{ color: '#002147' }}>{selectedProduct.nome}</h2>
+                  <p>{selectedProduct.detalhes}</p>
+                  <button style={{ ...styles.contactBtn, width: '100%', marginTop: '20px' }} onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquerir o ${selectedProduct.nome}`)}>Orçamento WhatsApp</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+         } />
+
          <Route path="/suprimentos" element={
         /* --- PÁGINA DE SUPRIMENTOS --- */
         <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
-          <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
-            <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Suprimentos Para Ponto,Acesso e Segurança.</h1>
-            <p style={{ opacity: 0.8, marginTop: '10px' }}>Encontre os suprimentos que você precisa com qualidade e agilidade. Oferecemos uma ampla variedade de produtos para atender suas
-              demandas, garantindo excelência e praticidade em cada compra.</p>
+          
+          <div style={{ 
+            backgroundColor: '#002147', 
+            color: 'white', 
+            padding: isMobile ? '40px 5%' : '0 5%', 
+            minHeight: '200px', // Tamanho padrão do Blog
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            position: 'relative',
+            overflow: 'visible' 
+          }}>
+            <div style={{ textAlign: 'center', zIndex: 5 }}>
+            <h1 style={{ fontSize: isMobile ? '1.8rem' : '2.5rem', fontWeight: '900', margin: 0 }}>
+              SUPRIMENTOS PARA PONTO <br/> ACESSO E SEGURANÇA.
+            </h1>
+            <p style={{ opacity: 0.8, marginTop: '5px', fontSize: '1.0rem' }}>
+              Encontre os suprimentos que você precisa com qualidade e agilidade. Oferecemos uma ampla variedade de produtos para atender suas
+              demandas, garantindo excelência e praticidade em cada compra.
+            </p>
+          </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
@@ -720,7 +908,7 @@ export default function App() {
               { 
                 id: 'suprimento 3', 
                 nome: "Fonte Rep. HEXA/PRISMA", 
-                img: "/fontehenry.png", 
+                img: "/fontehenry.jpg", 
                 desc: "Acesso rápido via cartão ou chaveiro.", 
                 detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
                 specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
@@ -741,6 +929,31 @@ export default function App() {
                 detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
                 specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
               },
+              { 
+                id: 'suprimento 6', 
+                nome: "Chapeira para Cartografico", 
+                img: "/chapera.jpg", 
+                desc: "Chapeira para 25/50/100 cartões.", 
+                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
+              },
+              { 
+                id: 'suprimento 7', 
+                nome: "Chachás Personalizados", 
+                img: "/cracha.jpg", 
+                desc: "Quer chachá com a sua cara? Venha conferir.", 
+                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
+              },
+              { 
+                id: 'suprimento 8', 
+                nome: "Cartucho de Impressão para Cartográfico", 
+                img: "/cartografico1.jpg", 
+                desc: "Quer o melhor pro seu cartográfico? Venha conferir.", 
+                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
+              },
+
             ].map((prod) => (
               <div key={prod.id} className="product-card" onClick={() => setSelectedProduct(prod)} style={{ backgroundColor: 'white', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', cursor: 'pointer', transition: '0.3s' }}>
                 <div style={{ height: '220px', backgroundImage: `url(${prod.img})`, backgroundSize: 'contain',backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
@@ -774,54 +987,45 @@ export default function App() {
          } />
          <Route path="/servicos" element={
         <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
-          <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
-            <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Nossos Serviços</h1>
-            <p style={{ opacity: 0.8, marginTop: '10px' }}>Na Opencom Tecnologia, estamos prontos para simplificar processos e garantir resultados.</p>
+          <div style={{ 
+            backgroundColor: '#002147', 
+            color: 'white', 
+            padding: isMobile ? '20px 5%' : '0 5%', 
+            minHeight: isMobile ? '120px' : '200px', // Reduzido de 220px para 150px
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            position: 'relative',
+            marginTop: '0px', // Aumentado um pouco para não cortar a cabeça do avatar que sobe
+            overflow: 'visible' 
+          }}>
+          <div style={{ textAlign: isMobile ? 'center' : 'center', flex: 1 }}>
+            <h1 style={{ fontSize: isMobile ? '1.8rem' : '2.5rem', fontWeight: '900', margin: 0, lineHeight: '1' }}>
+              NOSSOS <br /> SERVIÇOS
+            </h1>
+            <p style={{ opacity: 0.8, marginTop: '5px', fontSize: '1rem' }}>Na Opencom Tecnologia, estamos prontos para simplificar processos e garantir resultados.</p>
+          </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
             {[
               { id: 'serviço 1', 
-                nome: "Projeto Atualização Catraca para Facial", 
+                nome: "Atualização Catraca para Facial", 
                 img: "projetofacial.jpg", 
-                desc: "Projeto para Academias", 
+                desc: "Projeto para Academias,escolas e muito mais.", 
                 detalhes: "Perfeito para funcionários externos com GPS e Selfie.", 
                 specs: ["GPS", "Nuvem", "Facial"] }, 
               { id: 'serviço 2', 
-                nome: "Manutenção de Relógio de ponto", 
+                nome: "Manutenção e Instalação de Relógio de Ponto", 
                 img: "/banner5.png", 
-                desc: "Reconhecimento facial de alta precisão.", 
+                desc: "Quer um serviço de qualidade? Venha conferir.", 
                 detalhes: "Homologado pelo MTP. Reconhecimento rápido e seguro.", 
                 specs: ["Facial", "Wi-Fi", "Portaria 671"] },
               { id: 'serviço 3', 
-                nome: "Manutenção de catracas de acesso", 
-                img: "/banner4.jpg", 
-                desc: "Segurança e rapidez na digital.", 
-                detalhes: "Equipado com impressora térmica. Ideal para fluxos intensos.", 
+                nome: "Manutenção e Instalação de Catracas de Acesso", 
+                img: "/servico5.jpg", 
+                desc: "Quer mais segurança para sua empresa? Venha conferir..", 
+                detalhes: "Instalamos sua catraca e damos manutenção pra sua maior segurança.", 
                 specs: ["Digital", "Impressora", "USB"] },
-              { id: 'serviço 4', 
-                nome: "Instalação de relógios de Ponto", 
-                img: "/banner2.jpg", 
-                desc: "Controle via Smartphone.", 
-                detalhes: "Perfeito para funcionários externos com GPS e Selfie.", 
-                specs: ["GPS", "Nuvem", "Facial"] },
-              { id: 'serviço 5', 
-                nome: "Instalação de catracas de acesso", 
-                img: "/banner2.jpg", 
-                desc: "Controle via Smartphone.", 
-                detalhes: "Perfeito para funcionários externos com GPS e Selfie.", 
-                specs: ["GPS", "Nuvem", "Facial"] },
-              { id: 'serviço 6', 
-                nome: "Atualização de catracas para Facial", 
-                img: "/banner2.jpg", 
-                desc: "Controle via Smartphone.", 
-                detalhes: "Perfeito para funcionários externos com GPS e Selfie.", 
-                specs: ["GPS", "Nuvem", "Facial"] },  
-              { id: 'serviço 7', 
-                nome: "instalação de catracas e faciais para NEXT FIT", 
-                img: "/banner2.jpg", 
-                desc: "Controle via Smartphone.", 
-                detalhes: "Perfeito para funcionários externos com GPS e Selfie.", 
-                specs: ["GPS", "Nuvem", "Facial"] },
                    
               
             ].map((prod) => (
@@ -853,28 +1057,107 @@ export default function App() {
          } />
 
          <Route path="/blog" element={
-        <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
-          <div style={{ backgroundColor: '#002147', color: 'white', padding: '60px 5%', textAlign: 'center' }}>
-            <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Central Informativa</h1>
-            <p style={{ opacity: 0.8, marginTop: '10px' }}>Suas dúvidas acabam aqui!</p>
+  <div style={{ animation: 'fadeIn 0.6s ease-out', backgroundColor: '#f4f7f9', minHeight: '80vh', paddingBottom: '80px' }}>
+    
+    {/* CABEÇALHO COM VÍDEO AVATAR 3D À ESQUERDA */}
+    <div style={{ 
+      backgroundColor: '#002147', 
+      color: 'white', 
+      padding: isMobile ? '20px 5%' : '0 5%', 
+      minHeight: isMobile ? '120px' : '200px', // Reduzido de 220px para 150px
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      position: 'relative',
+      overflow: 'visible' 
+    }}>
+      
+      {/* CONTAINER FLEX */}
+        <div style={{ 
+          width: '100%',
+          maxWidth: '1200px', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          flexDirection: isMobile ? 'column' : 'row', // No mobile, o texto fica em cima
+          zIndex: 10
+        }}>
+
+          {/* 1. TEXTO À ESQUERDA (VEM PRIMEIRO NO CÓDIGO) */}
+          <div style={{ textAlign: isMobile ? 'center' : 'center', flex: 1 }}>
+            <h1 style={{ fontSize: isMobile ? '1.8rem' : '2.5rem', fontWeight: '900', margin: 0, lineHeight: '1' }}>
+              OPEN <br /> RESPONDE
+            </h1>
+            <p style={{ opacity: 0.8, marginTop: '5px', fontSize: '1rem' }}>Suas dúvidas acabam aqui!</p>
           </div>
+
+          {/* 2. AVATAR MP4 À DIREITA */}
+          <div style={{
+            width: isMobile ? '160px' : '180px',
+            position: 'absolute',
+            right: isMobile ? '10px' : ' 5%', // Fica na esquerda
+            display: 'flex',
+            justifyContent: 'flex-end', // Alinha no final (direta)
+            marginRight: isMobile ? '0' : '200px' // Faz ele "vazar" para a direita
+          }}>
+            <video 
+              src="/duvida1.webm" 
+              autoPlay loop muted playsInline 
+              style={{
+                width: '100%',
+                display: 'block',
+                transform: isMobile ? 'translateY(10px)' : 'translateY(-10px) scale(2.2)', 
+                filter: 'drop-shadow(-15px 15px 25px rgba(0,0,0,0.5))', // Sombra invertida para a esquerda
+                pointerEvents: 'none'
+              }}
+            />
+          </div>
+
+        </div>
+      </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', padding: '50px 7%', maxWidth: '1200px', margin: '0 auto' }}>
             {[
               { id: 'blog 1', 
-                nome: "Por que ter Relógio de ponto?", 
-                img: "/duvida2.mp4",
+                nome: "Por que preciso ter um sistema de ponto?", 
+                img: "/blog1.jpeg",
                 zoom: "1.1",
-                videoUrl: "/blog1.mp4", 
+                fit: "contain",
+                videoUrl: "/blog1.mp4",
                 desc: "Vamos conferir?.", 
-                detalhes: "Para manter seu relgio sempre operante e pronto para o trabalho.", 
+                detalhes: `Ter um sistema de ponto homologado não é apenas cumprir uma norma é proteger sua empresa e garantir os direitos de quem trabalha com você.
+
+                          Com ele, a jornada é registrada de forma segura, transparente e dentro das regras da Portaria 671.
+
+                          Isso evita erros, reduz conflitos trabalhistas, fortalece a confiança interna e assegura que horas extras, banco de horas e faltas sejam calculadas corretamente.
+
+                          Quando a empresa escolhe o caminho certo, todos ganham:
+                          • Mais organização
+                          • Mais segurança jurídica
+                          • Mais transparência
+                          • Menos riscos de questionamentos
+
+                          Quer orientação para escolher o melhor sistema para sua estrutura? Fale com a gente e teste sem compromisso.`,
                 specs: ["Facial", "Wi-Fi", "Portaria 671"] },
               { id: 'blog 2', 
-                nome: "Informação 2", 
-                img: "/duvida1.mp4",
-                zoom: "1.2", 
-                videoUrl: "/blog1.mp4",
-                desc: "Segurança e rapidez na digital.", 
-                detalhes: "Equipado com impressora térmica. Ideal para fluxos intensos.", 
+                nome: "Módulo facial é um tablet?", 
+                img: "/blog2.jpeg",
+                zoom: "1.1", 
+                fit: "contain",
+                desc: "Quer saber a diferença de um módulo homologado para um simples tablet?", 
+                detalhes: `Nem todo equipamento garante a segurança e a validade das marcações.
+
+                            A diferença está na homologação e na tecnologia usada.
+
+                            O módulo facial homologado foi desenvolvido especialmente para o controle de ponto ele oferece precisão, confiabilidade e total conformidade com a Portaria 671.
+                            Com ele, você tem:
+                            ✅ Reconhecimento facial rápido e seguro;
+                            ✅ Armazenamento dos dados de forma protegida;
+                            ✅ Redução de fraudes e erros;
+                            ✅ Conexão direta com o sistema de gestão de ponto.
+
+                            Já tablets e celulares podem ser utilizados, mas apenas se o sistema for homologado. Fora disso, há risco de invalidação das marcações e problemas trabalhistas.
+
+                            Invista em um módulo facial homologado e garanta mais segurança, agilidade e tranquilidade para sua empresa.`, 
                 specs: ["Digital", "Impressora", "USB"] },
               { id: 'blog 3', 
                 nome: "Informação 3", 
@@ -918,9 +1201,11 @@ export default function App() {
           height: '100%', 
           width: '100%',
           backgroundImage: `url(${prod.img})`, 
-          backgroundSize: 'cover', // Imagens estáticas preenchem tudo
+          backgroundSize: prod.fit || 'cover', // Imagens estáticas preenchem tudo
           backgroundRepeat: 'no-repeat', 
-          backgroundPosition: 'center' 
+          backgroundPosition: 'center',
+          transform: `scale(${prod.zoom || 1})`, 
+          transition: 'transform 0.3s ease' // Suaviza se você quiser adicionar hover depois
         }} />
       )}
     </div>
@@ -928,50 +1213,113 @@ export default function App() {
     <div style={{ padding: '25px' }}>
       <h3>{prod.nome}</h3>
       <p style={{ fontSize: '14px', color: '#666' }}>{prod.desc}</p>
-      <span style={{ color: '#12bdd5', fontWeight: 'bold' }}>Ver Detalhes +</span>
+      <span style={{ color: '#12bdd5', fontWeight: 'bold' }}>Vamos Conferir +</span>
     </div>
   </div>
 ))}
           </div>
 
           {selectedProduct && (
-  <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.9)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
+  <div style={{ 
+    position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
+    backgroundColor: 'rgba(0,0,0,0.9)', display: 'flex', justifyContent: 'center', 
+    alignItems: 'center', zIndex: 6000, padding: isMobile ? '10px' : '20px' 
+  }}>
     
-    {/* Aumentamos o maxWidth de 800px para 1100px para o card ficar maior */}
-    <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '1200px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
+    <div style={{ 
+      backgroundColor: 'white', 
+      borderRadius: '20px', 
+      maxWidth: '1100px', 
+      width: '100%', 
+      display: 'flex', 
+      flexDirection: isMobile ? 'column' : 'row', // Empilha no celular
+      position: 'relative', 
+      maxHeight: '90vh', // Limita a altura do modal a 90% da tela
+      overflow: 'hidden', // Esconde o que vazar do container principal
+      boxShadow: '0 20px 50px rgba(0,0,0,0.5)' 
+    }}>
       
-      <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '40px', height: '40px', cursor: 'pointer', zIndex: 10 }}>X</button>
+      {/* BOTÃO FECHAR FIXO NO TOPO */}
+      <button 
+        onClick={() => setSelectedProduct(null)} 
+        style={{ 
+          position: 'absolute', top: '15px', right: '15px', border: 'none', 
+          background: '#eee', borderRadius: '50%', width: '40px', height: '40px', 
+          cursor: 'pointer', zIndex: 100 
+        }}
+      >X</button>
       
-      {/* Lado do Vídeo/Imagem */}
-      <div style={{ flex: '1 1 600px', backgroundColor: '#000', minHeight: '400px', display: 'flex', alignItems: 'center' }}>
+      {/* LADO DA MÍDIA (VÍDEO OU IMAGEM) */}
+      <div style={{ 
+        flex: isMobile ? '0 0 250px' : '1 1 600px', 
+        backgroundColor: '#000', 
+        display: 'flex', 
+        alignItems: 'center',
+        overflow: 'hidden'
+      }}>
         {selectedProduct.videoUrl ? (
           <iframe
             width="100%"
             height="100%"
-            src={`${selectedProduct.videoUrl}?autoplay=1`} // Autoplay ativa ao abrir
-            title="YouTube video player"
+            src={`${selectedProduct.videoUrl}?autoplay=1`}
+            title="Mídia"
             frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            style={{ minHeight: '400px' }}
+            allow="autoplay"
+            style={{ 
+              minHeight: isMobile ? '250px' : '500px',
+              transform: `scale(${selectedProduct.zoom || 1})` 
+            }}
           ></iframe>
         ) : (
-          <div style={{ width: '100%', height: '100%', backgroundImage: `url(${selectedProduct.img})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+          <div style={{ 
+            width: '100%', 
+            height: '100%', 
+            minHeight: isMobile ? '250px' : '500px',
+            backgroundImage: `url(${selectedProduct.img})`, 
+            backgroundSize: selectedProduct.fit || 'cover', 
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            transform: `scale(${selectedProduct.zoom || 1})`
+          }} />
         )}
       </div>
 
-      {/* Lado do Texto */}
-      <div style={{ flex: '1 1 350px', padding: '40px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <h2 style={{ color: '#002147', fontSize: '2rem' }}>{selectedProduct.nome}</h2>
-        <p style={{ fontSize: '1.1rem', lineHeight: '1.6', color: '#444' }}>{selectedProduct.detalhes}</p>
+      {/* LADO DO TEXTO COM SCROLL (ROLAGEM) */}
+      <div style={{ 
+        flex: '1 1 400px', 
+        padding: isMobile ? '25px' : '45px', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        backgroundColor: '#fff',
+        overflowY: 'auto', // ATIVA A ROLAGEM AQUI
+        maxHeight: isMobile ? '400px' : 'none' // No mobile, limita a área de texto para não sumir
+      }}>
+        <h2 style={{ color: '#002147', fontSize: '2rem', marginBottom: '20px' }}>{selectedProduct.nome}</h2>
+        
+        <p style={{ 
+          fontSize: '1.1rem', 
+          lineHeight: '1.7', 
+          color: '#444', 
+          whiteSpace: 'pre-line', // Respeita as estrofes
+          marginBottom: '30px'
+        }}>
+          {selectedProduct.detalhes}
+        </p>
         
         <button 
-          style={{ ...styles.contactBtn, width: '100%', marginTop: '30px', padding: '15px', fontSize: '16px' }} 
-          onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, vi o vídeo sobre ${selectedProduct.nome} e tenho interesse.`)}
+          style={{ 
+            ...styles.contactBtn, 
+            width: '100%', 
+            padding: '18px', 
+            fontSize: '16px',
+            marginTop: 'auto' // Empurra o botão para o final do conteúdo
+          }} 
+          onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, vi o conteúdo sobre ${selectedProduct.nome}`)}
         >
           Solicitar Consultoria no WhatsApp
         </button>
       </div>
+
     </div>
   </div>
 )}
