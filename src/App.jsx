@@ -49,7 +49,7 @@ const MainSlider = memo(() => {
       <Swiper modules={[Autoplay, Pagination, Navigation]} speed={1500} autoplay={{ delay: 5000, disableOnInteraction: false }} pagination={{ clickable: true }} navigation loop style={{ height: '100%' }}>
         {slides.map((slide, index) => (
           <SwiperSlide key={index}>
-            <div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundSize: slide.fit || 'cover', color: 'white', backgroundImage: `url("${slide.img}")` }}>
+            <div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundSize: slide.fit || 'cover', color: 'white', backgroundImage: `url("${slide.img}")`,position: 'relative',boxSizing: 'border-box', borderBottom: '4px solid #12bdd5',}}>
               <div style={{ backgroundColor: 'rgba(0, 33, 71, 0.5)', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '0 10%' }}>
                 <h2 className="anim-titulo" style={{ fontSize: '3.5rem', textAlign: 'center', margin: 0, fontWeight: '800', textShadow: '2px 2px 8px rgba(0,0,0,0.7)' }}>{slide.title}</h2>
                 <p className="anim-subtitulo" style={{ fontSize: '1.5rem', marginTop: '15px', fontWeight: '400' }}>{slide.sub}</p>
@@ -92,15 +92,56 @@ const dropdownItemStyle = {
   borderBottom: '1px solid #f0f0f0'
 };
 // --- NOVO COMPONENTE PARA A FIGURINHA ---
+
 const BotaoFlutuante = ({ selectedProduct }) => { 
   const location = useLocation();
-  // Se o caminho for '/sobre', não renderiza nada
-  if (location.pathname === '/sobre' || selectedProduct ) return null;
 
+  // Não renderiza o boneco se estiver na página "Sobre" ou se um produto estiver aberto no modal
+  if (location.pathname === '/sobre' || selectedProduct) return null;
 
+  // MAPEAMENTO: Define o texto e o vídeo para cada página
+  const conteudoPorPagina = {
+    '/': { 
+      texto: 'Quer me conhecer?', 
+      video: '/boneco.mp4' 
+    },
+    '/relogios': { 
+      texto: 'Precisa de um Relógio?', 
+      video: '/bonecorelogio.mp4' // Usando o vídeo que você já tem para esta seção
+    },
+    '/suprimentos': { 
+      texto: 'Procurando Bobinas?', 
+      video: '/bonecosuprimento.mp4' // Substitua pelo nome do seu arquivo real
+    },
+    '/acesso': { 
+      texto: 'Segurança para sua Empresa?', 
+      video: '/bonecocatraca.mp4' // Substitua pelo nome do seu arquivo real
+    },
+    '/servicos': { 
+      texto: 'Precisa de manutenção?', 
+      video: '/bonecoconcerta.mp4' 
+    }
+  };
+
+  // Busca o conteúdo da página atual ou define um padrão (fallback)
+  const configAtual = conteudoPorPagina[location.pathname] || { 
+    texto: 'Posso te ajudar?', 
+    video: '/boneco.mp4' 
+  };
+// Verifica se o balão atual é o "Quer me conhecer?"
+  const ePaginaInicial = configAtual.texto === 'Quer me conhecer?';
+
+  // Define o componente que envolverá o conteúdo (Link ou div)
+  const Container = ePaginaInicial ? 'a' : 'div';
+  const propsContainer = ePaginaInicial ? { 
+  // O link precisa de %20 no lugar dos espaços para não quebrar em alguns navegadores
+  href: "https://wa.me/5585991220790?text=Olá!%20Gostaria%20de%20conhecer%20melhor%20a%20Opencom", 
+  target: "_blank", 
+  rel: "noopener noreferrer" 
+} : {};
   return (
-    <Link 
-      to="/sobre" 
+    <Container 
+      {...propsContainer}
       style={{ 
         position: 'fixed', 
         bottom: '30px', 
@@ -110,10 +151,11 @@ const BotaoFlutuante = ({ selectedProduct }) => {
         flexDirection: 'column', 
         alignItems: 'center', 
         textDecoration: 'none',
-        cursor: 'pointer'
+        // O cursor só vira "pointer" se for um link clicável
+        cursor: ePaginaInicial ? 'pointer' : 'default'
       }}
     >
-      {/* BALÃO DE FALA */}
+      {/* BALÃO DE FALA DINÂMICO */}
       <div style={{
         backgroundColor: '#12bdd5',
         color: '#001a38',
@@ -126,8 +168,7 @@ const BotaoFlutuante = ({ selectedProduct }) => {
         position: 'relative',
         whiteSpace: 'nowrap'
       }}>
-        Quer me conhecer?
-        {/* TRIÂNGULO DO BALÃO */}
+        {configAtual.texto}
         <div style={{
           position: 'absolute',
           bottom: '-6px',
@@ -141,9 +182,10 @@ const BotaoFlutuante = ({ selectedProduct }) => {
         }}></div>
       </div>
 
-      {/* VÍDEO DO BONECO (Substituindo a Imagem) */}
+      {/* VÍDEO DO BONECO DINÂMICO */}
       <video 
-        src="/boneco.mp4" 
+        key={configAtual.video}
+        src={configAtual.video} 
         autoPlay 
         loop 
         muted 
@@ -156,13 +198,13 @@ const BotaoFlutuante = ({ selectedProduct }) => {
           transform: 'scale(1.2)',
           borderRadius: '50%', 
           border: '3px solid #12bdd5',
-          backgroundColor: '#000' // Fundo preto para combinar com o boneco
-          
+          backgroundColor: '#000'
         }} 
       />
-    </Link>
+    </Container>
   );
 };
+
 export default function App() {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -502,57 +544,180 @@ export default function App() {
                 nome: "HEXA 671", 
                 img: "/relogiohexa.jpg", 
                 desc: "Segurança e rapidez na digital.", 
-                detalhes: "Equipado com impressora térmica. Ideal para fluxos intensos.", 
+                detalhes: ` O Hexa 671 é a solução ideal para empresas que buscam eficiência, segurança e conformidade legal no controle de jornada. Desenvolvido pela Henry, este equipamento combina tecnologia de ponta com um design robusto, sendo especialmente projetado para atender fluxos intensos de marcação de ponto.
+
+                              Principais Diferenciais:
+                              • Alta Performance: Equipado com processador de alto desempenho, garantindo rapidez na leitura e no registro, evitando filas nos horários de pico.
+
+                              • Impressora Térmica Integrada: Possui impressora de alta velocidade para a emissão de comprovantes de registro (tickets), garantindo a transparência entre empresa e colaborador.
+
+                              • Múltiplas Formas de Identificação: Oferece versatilidade no acesso através de:
+
+                                  • Biometria (impressão digital).
+
+                                  • Cartão de proximidade (RFID).
+
+                                  • Senha via teclado.
+
+                              • Grande Capacidade de Armazenamento: Memória robusta capaz de gerenciar milhares de funcionários e registros de eventos de forma offline.
+
+                              • Conectividade: Integração simplificada com softwares de gestão via TCP/IP (rede), USB ou Wi-Fi (opcional).
+
+                              Especificações Técnicas:
+                              • Modelo: Hexa 671 (Linha Advanced).
+
+                              • Display: Tela colorida de alta resolução para facilitar a visualização e interação do usuário.
+
+                              • Segurança: Sensores anti-fraude e gabinete reforçado com trava de segurança.
+
+                              • Conformidade: Totalmente adequado às exigências das portarias do Ministério do Trabalho e Emprego (MTE).
+
+                              Indicação de Uso:
+                              Indicado para indústrias, comércios de grande porte e empresas com alta rotatividade ou grande quadro de funcionários que necessitam de um equipamento resistente e de baixa manutenção.
+
+                                  Dica: Este equipamento é reconhecido por sua durabilidade no mercado brasileiro, sendo uma das escolhas preferidas para ambientes que exigem um hardware que suporte o uso constante sem perda de precisão.` ,
                 specs: ["Digital", "Impressora", "USB"] },
                 { id: 'produto 2', 
                 nome: "EVO 50 AFD", 
                 img: "/relogioevo50.jpg", 
                 desc: "Reconhecimento facial de alta precisão.", 
-                detalhes: "Homologado pelo MTP. Reconhecimento rápido e seguro.", 
+                detalhes: ` EVO 50 AFD: Tecnologia e Conformidade.
+
+                              O EVO 50 AFD é um terminal de reconhecimento facial de última geração, desenvolvido pela EVO, focado em aliar segurança biométrica avançada com as exigências legais do Ministério do Trabalho.
+
+                            • Tecnologia de Reconhecimento: Utiliza biometria facial de alta velocidade, permitindo a identificação do colaborador sem contato físico, o que aumenta a higiene e a durabilidade do hardware.
+
+                            • Segurança (Anti-Fake): Equipado com sensores que distinguem rostos reais de fotos ou vídeos, impedindo tentativas de fraude no registro.
+
+                            • Conformidade Legal: É um modelo homologado pelo MTP (Ministério do Trabalho e Previdência), atendendo aos requisitos técnicos para o registro eletrônico de ponto.
+
+                            • Interface e Design: Possui tela colorida de alta resolução que guia o usuário durante o processo de marcação, com um design vertical compacto e moderno que se adapta a qualquer recepção ou parede.
+
+                            • Conectividade: Projetado para integração nativa com softwares de gestão de RH, facilitando a coleta de dados e o fechamento da folha de pagamento.
+
+                            Destaque Principal: Enquanto o Hexa foca na versatilidade de identificação (digital, cartão, senha), o EVO 50 AFD foca na experiência "touchless" (sem toque) e na rapidez extrema do reconhecimento facial.`, 
                 specs: ["Facial", "Wi-Fi", "Portaria 671"] },
                 { id: 'produto 3', 
                 nome: "Relógio Prisma", 
                 img: "/relogioprisma.jpg", 
-                desc: "Reconhecimento facial de alta precisão.", 
-                detalhes: "Homologado pelo MTP. Reconhecimento rápido e seguro.", 
+                desc: "Segurança e rapidez na digital.", 
+                detalhes: `Relógio Prisma: Versatilidade e Robustez.
+
+                        O Prisma é um dos Registradores Eletrônicos de Ponto (REP) mais tradicionais e confiáveis do mercado, projetado para empresas que precisam de um equipamento robusto e com múltiplas formas de identificação.
+
+                      •  Multi-Identificação: Oferece grande flexibilidade, permitindo o registro de ponto via biometria (digital), cartão de proximidade (RFID), código de barras ou senha numérica.
+
+                      •  Impressão de Comprovante: Diferente do modelo facial EVO, o Prisma possui uma impressora térmica integrada de alta velocidade para a emissão do comprovante de registro do trabalhador (ticket).
+
+                      •  Conformidade Legal: Totalmente homologado pelo MTP e em conformidade com as normas da Portaria 671, garantindo segurança jurídica para a empresa.
+
+                      •  Capacidade de Armazenamento: Possui uma memória interna de alta capacidade (MRP) para armazenar registros de ponto por longos períodos, além de suporte para bobinas de papel de grande metragem.
+
+                      •  Durabilidade: Construído com materiais resistentes, é ideal para ambientes com grande fluxo de pessoas, como indústrias, comércios e canteiros de obras.
+
+                        Destaque Principal: Enquanto o EVO 50 foca na tecnologia facial sem contato, o Prisma se destaca pela versatilidade física, sendo a escolha ideal se a sua operação exige a entrega do comprovante em papel e aceita diferentes formas de identificação no mesmo aparelho.`, 
                 specs: ["Facial", "Wi-Fi", "Portaria 671"] },
                 { id: 'produto 7', 
                 nome: "EVO REP-C", 
                 img: "/relogioevo.jpg", 
-                desc: "Reconhecimento facial de alta precisão.", 
-                detalhes: "Homologado pelo MTP. Reconhecimento rápido e seguro.", 
+                desc: "Segurança e rapidez na digital.", 
+                detalhes: `EVO REP-C: Equilíbrio e Modernidade.
+
+                      O EVO REP-C é um Registrador Eletrônico de Ponto que combina o design moderno da linha EVO com as funcionalidades clássicas de um terminal de alta performance, focado em biometria digital e impressão de tickets.
+
+                    •  Identificação Híbrida: Oferece múltiplas formas de registro, incluindo biometria (digital) de alta precisão, cartão de proximidade (RFID) e teclado para senha.
+
+                    •  Impressora Integrada: Possui compartimento para bobina de papel, realizando a impressão instantânea do comprovante de registro, atendendo às necessidades de fiscalização imediata.
+
+                    •  Conformidade Legal: Equipamento homologado pelo MTP, garantindo total segurança jurídica e técnica conforme as normas vigentes (Portaria 671).
+
+                    •  Interface Amigável: Conta com uma tela colorida e teclado físico intuitivo, facilitando a interação do colaborador mesmo em ambientes de uso intenso.
+
+                    •  Conectividade e Gestão: Permite a exportação de dados via rede (TCP/IP) ou USB, integrando-se facilmente a softwares de tratamento de ponto para uma gestão automatizada.
+
+                      Destaque Principal: O EVO REP-C é o "meio-termo" perfeito: ele traz a estética moderna e o hardware atualizado da linha EVO (como o 50 AFD), mas mantém a impressão de comprovante e a biometria digital, sendo o sucessor ideal para quem gosta da robustez do Prisma mas quer um design mais atual.`, 
                 specs: ["Facial", "Wi-Fi", "Portaria 671"] },
                 { id: 'produto 6', 
                 nome: "EVO 40 AFD", 
                 img: "/evo40.png", 
                 desc: "Reconhecimento facial de alta precisão.", 
-                detalhes: "Homologado pelo MTP. Reconhecimento rápido e seguro.", 
+                detalhes: `EVO 40 AFD: Agilidade e Design Minimalista.
+
+                          O EVO 40 AFD é a versão compacta e elegante dos terminais de reconhecimento facial da EVO, projetado para oferecer o máximo de tecnologia ocupando o mínimo de espaço.
+
+                        •  Reconhecimento Facial de Alta Performance: Equipado com tecnologia de ponta para identificação instantânea, mesmo em diferentes condições de iluminação, sem necessidade de contato físico.
+
+                        •  Design Ultra-Compacto: Possui um formato mais vertical e minimalista com acabamento refinado, sendo a escolha ideal para escritórios e recepções que prezam pela estética.
+
+                        •  Conformidade Legal: Equipamento homologado pelo MTP, atendendo integralmente às normas brasileiras para o registro de ponto eletrônico (Portaria 671).
+
+                        •  Segurança Inteligente: Conta com detecção de vivacidade (anti-fake), garantindo que apenas rostos reais (e não fotos) consigam realizar a marcação do ponto.
+
+                        •  Foco em Eficiência: Ideal para empresas que buscam um processo de entrada e saída extremamente rápido, eliminando filas e otimizando o fluxo de colaboradores.
+
+                          Destaque Principal: O EVO 40 AFD diferencia-se do EVO 50 pelo seu tamanho ainda mais reduzido e visual discreto. É a solução perfeita para quem quer a tecnologia facial de elite em um hardware que se integra de forma quase invisível à decoração do ambiente.`, 
                 specs: ["Facial", "Wi-Fi", "Portaria 671"] },
               { id: 'produto 4', 
                 nome: "IDClass 671", 
                 img: "/relogioidclass.jpg", 
-                desc: "Reconhecimento facial de alta precisão.", 
-                detalhes: "Homologado pelo MTP. Reconhecimento rápido e seguro.", 
+                desc: "Segurança e rapidez na digital.", 
+                detalhes: `IDClass 671: Performance e Alta Tecnologia.
+
+                            O IDClass 671 (da Control iD) é um dos registradores de ponto mais modernos e vendidos do Brasil, conhecido por seu processamento extremamente rápido e interface amigável.
+
+                          •  Identificação Multibiométrica: Permite o registro via biometria digital (com um sensor de alta precisão), cartões de proximidade (RFID/Smart Card) e senha pelo teclado touch.
+
+                          •  Impressora de Alta Velocidade: Possui uma guilhotina integrada e um sistema de impressão térmica ultra-rápido, otimizando o tempo de saída do comprovante e evitando filas.
+
+                          •  Conformidade Total: É um equipamento homologado pelo MTP e atende rigorosamente a todos os requisitos da Portaria 671, garantindo validade jurídica absoluta.
+
+                          •  Display Touchscreen: Diferencia-se por sua tela colorida sensível ao toque de 2.4", que torna a interação muito mais intuitiva e fácil tanto para o funcionário quanto para o administrador.
+
+                          •  Grande Capacidade: Gerencia milhares de usuários e armazena milhões de registros em sua memória interna, sendo ideal para empresas de qualquer porte.
+
+                            Destaque Principal: O IDClass 671 é o "campeão de performance". Se você busca um equipamento com tela touch, design arrojado e a impressão de ticket mais rápida da categoria, este é o modelo ideal para operações que não podem perder um segundo sequer.`, 
                 specs: ["Facial", "Wi-Fi", "Portaria 671"] },
               
               { id: 'produto 5', 
                 nome: "BLUE 671", 
                 img: "/relogioblue.jpg", 
-                desc: "Controle via Smartphone.", 
-                detalhes: "Perfeito para funcionários externos com GPS e Selfie.", 
+                desc: "Segurança e rapidez na digital.", 
+                detalhes: `BLUE 671: Compacto e Conectado.
+
+                            O BLUE 671 é um registrador de ponto eletrônico (REP) que se destaca pela simplicidade de operação e excelente custo-benefício, focado em pequenas e médias empresas que buscam eficiência em um design horizontal.
+
+                          •  Identificação Ágil: Permite o registro de ponto através de biometria (digital) de alta resolução e cartão de proximidade (RFID), oferecendo opções práticas para o colaborador.
+
+                          •  Gestão de Comprovante: Possui impressora integrada de fácil reposição, emitindo o ticket de confirmação para o funcionário de acordo com as normas vigentes.
+
+                          •  Conformidade Legal: Equipamento totalmente homologado pelo MTP e adequado à Portaria 671, garantindo que sua empresa esteja em dia com a legislação trabalhista.
+
+                          •  Interface Prática: Conta com um display LCD colorido e indicadores luminosos (LEDs) que facilitam a visualização do status da operação, mesmo em ambientes com pouca luz.
+
+                          •  Conectividade: Oferece comunicação via rede (TCP/IP) e porta USB para extração de dados, simplificando a transferência das informações para o software de RH.
+
+                            Destaque Principal: O BLUE 671 é a escolha ideal para quem busca um equipamento de entrada robusto. Ele entrega a segurança da biometria digital e a obrigatoriedade do ticket impresso em um formato horizontal clássico, sendo conhecido por sua durabilidade e facilidade de manutenção.`, 
                 specs: ["GPS", "Nuvem", "Facial"] },
                 
                 { id: 'produto 8', 
                 nome: "Relogio Cartográfico", 
                 img: "/relogiocartografico.jpg", 
-                desc: "Reconhecimento facial de alta precisão.", 
-                detalhes: "Homologado pelo MTP. Reconhecimento rápido e seguro.", 
-                specs: ["Facial", "Wi-Fi", "Portaria 671"] },
-                { id: 'produto 9', 
-                nome: "Relógio Prisma Facial", 
-                img: "/relogioprismafacial.jpg", 
-                desc: "Reconhecimento facial de alta precisão.", 
-                detalhes: "Homologado pelo MTP. Reconhecimento rápido e seguro.", 
+                desc: "Segurança e rapidez na marcação.", 
+                detalhes: `Relógio Cartográfico Vega: Simplicidade e Autonomia.
+
+                          O Vega é a solução ideal para empresas que buscam um controle de ponto tradicional, prático e que dispense o uso de computadores ou infraestrutura de rede complexa.
+
+                        •  Registro por Cartão: A marcação é feita de forma mecânica através de cartões de cartolina (cartão de ponto), onde o relógio imprime o horário exato em colunas específicas.
+
+                        •  Independência de Software: Diferente dos modelos digitais, o Vega funciona de forma autônoma. Não requer instalação de softwares, cabos de rede ou conexão com a internet para operar.
+
+                        •  Recursos Inteligentes: Possui puxador automático do cartão, identificação do lado correto da impressão e sinalizador sonoro (sirene interna) para indicar horários de entrada e saída.
+
+                        •  Bateria Interna: Equipado com bateria de backup que mantém o funcionamento e a configuração do horário mesmo em caso de queda de energia.
+
+                        •  Versatilidade: Ideal para pequenas empresas, canteiros de obras, oficinas ou locais onde o registro manual ainda é a forma mais eficiente de gestão.
+
+                          Destaque Principal: O Relógio Vega é o "clássico moderno". Ele elimina qualquer complicação tecnológica: basta ligar na tomada e começar a usar. É a escolha perfeita para quem quer zero custo de manutenção de software e total facilidade na operação.`, 
                 specs: ["Facial", "Wi-Fi", "Portaria 671"] },
                 
             ].map((prod) => (
@@ -566,42 +731,108 @@ export default function App() {
               </div>
             ))}
           </div>
-
-          {selectedProduct && (
-          <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
-            <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '800px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
-              <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer', zIndex: 10 }}>X</button>
-              
-              {/* CONTAINER DA IMAGEM NO MODAL COM ZOOM INDEPENDENTE */}
-              <div style={{ 
-                flex: '1 1 350px', 
-                minHeight: '350px', 
-                overflow: 'hidden', // Garante que o zoom não saia do limite da metade do modal
-                backgroundColor: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
+              {selectedProduct && (
                 <div style={{ 
-                  width: '100%',
-                  height: '100%',
-                  backgroundImage: `url(${selectedProduct.img})`, 
-                  backgroundSize: 'contain', // No modal, o contain costuma ser melhor para ver o produto todo
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'center',
-                  // APLICA O ZOOM INDEPENDENTE AQUI TAMBÉM:
-                  transform: `scale(${selectedProduct.zoom || 1.0})` 
-                }} />
-              </div>
+                  position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
+                  backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', 
+                  alignItems: 'center', zIndex: 5000, padding: isMobile ? '10px' : '20px' 
+                }}>
+                  
+                  <div style={{ 
+                    backgroundColor: 'white', 
+                    borderRadius: '20px', 
+                    maxWidth: '900px', 
+                    width: '100%', 
+                    height: isMobile ? '90vh' : '80vh', // Altura otimizada para mobile
+                    display: 'flex', 
+                    flexDirection: isMobile ? 'column' : 'row', 
+                    position: 'relative', 
+                    overflow: 'hidden' 
+                  }}>
+                    
+                    {/* Botão Fechar */}
+                    <button 
+                      onClick={() => setSelectedProduct(null)} 
+                      style={{ 
+                        position: 'absolute', top: '15px', right: '15px', border: 'none', 
+                        background: 'rgba(0,0,0,0.1)', borderRadius: '50%', width: '35px', 
+                        height: '35px', cursor: 'pointer', zIndex: 100 
+                      }}
+                    >
+                      X
+                    </button>
+                    
+                    {/* LADO ESQUERDO: IMAGEM FIXA */}
+                    <div style={{ 
+                      flex: isMobile ? 'none' : '1.2', 
+                      backgroundColor: '#fff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRight: isMobile ? 'none' : '1px solid #eee',
+                      borderBottom: isMobile ? '1px solid #eee' : 'none',
+                      height: isMobile ? '250px' : '100%',
+                      padding: '20px'
+                    }}>
+                      <div style={{ 
+                        width: '100%',
+                        height: '100%',
+                        backgroundImage: `url(${selectedProduct.img})`, 
+                        backgroundSize: 'contain',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center',
+                        transform: `scale(${selectedProduct.zoom || 1.0})` 
+                      }} />
+                    </div>
 
-              <div style={{ flex: '1 1 350px', padding: '40px' }}>
-                <h2 style={{ color: '#002147' }}>{selectedProduct.nome}</h2>
-                <p>{selectedProduct.detalhes}</p>
-                <button style={{ ...styles.contactBtn, width: '100%', marginTop: '20px' }} onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquerir o ${selectedProduct.nome}`)}>Orçamento WhatsApp</button>
-              </div>
-            </div>
-          </div>
-        )}
+                    {/* LADO DIREITO: CONTEÚDO COM SCROLL E RODAPÉ FIXO */}
+                    <div style={{ 
+                      flex: '1', 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      height: isMobile ? 'calc(100% - 250px)' : '100%', 
+                      position: 'relative',
+                      backgroundColor: 'white'
+                    }}>
+                      
+                      {/* ÁREA DE TEXTO COM SCROLL */}
+                      <div style={{ 
+                        flex: 1, 
+                        padding: isMobile ? '20px' : '40px', 
+                        overflowY: 'auto', 
+                        paddingBottom: '100px' // Mantém o texto visível acima do botão
+                      }}>
+                        <h2 style={{ color: '#002147', marginBottom: '20px', fontSize: isMobile ? '1.5rem' : '1.8rem' }}>
+                          {selectedProduct.nome}
+                        </h2>
+                        <div style={{ 
+                          whiteSpace: 'pre-line', 
+                          fontSize: '15px', 
+                          lineHeight: '1.7', 
+                          color: '#444', 
+                          textAlign: 'left'
+                        }}>
+                          {selectedProduct.detalhes}
+                        </div>
+                      </div>
+
+                      {/* RODAPÉ FIXO COM BOTÃO (Não sobe com o scroll) */}
+                      <div style={{ 
+                        position: 'absolute', bottom: 0, left: 0, width: '100%', 
+                        padding: '20px 30px', backgroundColor: 'white', 
+                        borderTop: '1px solid #eee', boxShadow: '0 -5px 15px rgba(0,0,0,0.05)' 
+                      }}>
+                        <button 
+                          style={{ ...styles.contactBtn, width: '100%', margin: 0 }} 
+                          onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquirir o ${selectedProduct.nome}`)}
+                        >
+                          Orçamento WhatsApp
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
         </div>
         } />
 
@@ -654,35 +885,168 @@ export default function App() {
                 nome: "Catraca Henry Lumen facial", 
                 img: "/catracahenry.png", 
                 desc: "Acesso rápido com 1 ou 2 faciais.", 
-                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
+                detalhes: `Catraca Henry Lumen Facial: Segurança e Controle de Fluxo.
+
+                            A Lumen Facial é uma solução completa para controle de acesso físico, que une a robustez das catracas Henry com a modernidade do reconhecimento facial para gerenciar a entrada e saída de pessoas.
+
+                          •  Identificação Sem Contato: Equipada com um leitor facial de alta tecnologia, permite o acesso liberado apenas com o rosto, garantindo higiene e rapidez na passagem.
+
+                          •  Resistência e Versatilidade: Projetada com materiais resistentes à água e intempéries, é perfeita tanto para áreas internas quanto externas de condomínios, academias e empresas.
+
+                          •  Segurança Reforçada: O sistema de reconhecimento facial impede o uso de fotos ou vídeos para burlar o acesso, oferecendo um nível de segurança muito superior às chaves ou cartões físicos.
+
+                          •  Mecanismo Suave: Possui um sistema de giro silencioso e confortável, projetado para suportar alto fluxo de pessoas diariamente sem travamentos.
+
+                          •  Design Moderno: Sua coluna em inox e detalhes em cinza conferem um visual profissional que se integra facilmente à estética de recepções e portarias modernas.
+
+                            Destaque Principal: A Catraca Lumen Facial é a escolha definitiva para quem precisa de segurança máxima no controle de fluxo. Ela elimina a necessidade de portaria física para liberação de acesso, automatizando todo o processo com a precisão do reconhecimento facial "touchless".`, 
                 specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
               },
               { id: 'acesso 1', 
                 nome: "Catraca Topdata Facial 4", 
                 img: "/catracatopdatafacial.jpg", 
                 desc: "Acesso rápido com 1 ou 2 faciais.", 
-                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
+                detalhes: `Catraca Topdata Facial 4: Tecnologia e Versatilidade.
+
+                            A Topdata Facial 4 é uma solução de controle de acesso robusta, que integra um dos hardwares mais confiáveis do mercado com a praticidade do reconhecimento facial de última geração.
+
+                          •  Reconhecimento Facial Integrado: Permite a liberação de acesso de forma rápida e sem contato, utilizando tecnologia que identifica o usuário mesmo em ambientes com variações de luz.
+
+                          •  Resistência às Intempéries: Equipada com leitor auxiliar resistente à água, é a escolha ideal para áreas externas de condomínios, clubes ou empresas que sofrem exposição ao tempo.
+
+                          •  Múltiplas Formas de Acesso: Além do reconhecimento facial, o equipamento conta com teclado para senhas e leitor para cartões de proximidade, oferecendo redundância e segurança.
+
+                          •  Alta Durabilidade: Fabricada com materiais de alta resistência, foi projetada para suportar um fluxo intenso de passagens diárias com baixo índice de manutenção.
+
+                          •  Instalação Flexível: Pode ser configurada para controlar tanto a entrada quanto a saída, integrando-se facilmente a diversos sistemas de gestão de acesso e portaria.
+
+                            Destaque Principal: A Topdata Facial 4 se diferencia pela sua grande adaptabilidade a ambientes externos. Se o seu projeto precisa de uma catraca que suporte chuva e sol sem perder a precisão do reconhecimento facial, este é o modelo mais indicado.`, 
                 specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
               },
               { id: 'acesso 6', 
-                nome: "Catraca Control ID 1 ou 2 Faciais", 
+                nome: "Catraca Control Facial Next", 
                 img: "/catracacontrolid2facial.jpg", 
-                desc: "Acesso rápido via cartão ou chaveiro.", 
-                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
+                desc: "Acesso rápido com 1 ou 2 faciais.", 
+                detalhes: `Catraca Control Facial Next: Inteligência e Design Superior.
+
+                            A Control Facial Next (da Control iD) representa o que há de mais moderno em controle de acesso, combinando um design premiado com o processamento ultra-rápido característico da marca.
+
+                          •  Reconhecimento Facial de Elite: Utiliza algoritmos de última geração que identificam o usuário em menos de 0,5 segundo, mesmo com o uso de máscaras ou acessórios, garantindo fluxo contínuo sem paradas.
+
+                          •  Resistência Total: O leitor facial é resistente à água e poeira, tornando o equipamento ideal para portarias externas, clubes e áreas de lazer expostas ao clima.
+
+                          •  Interface Touchscreen: A catraca possui um display colorido sensível ao toque no topo, que facilita a configuração e oferece uma interação amigável para o usuário final.
+
+                          •  Mecanismo Silencioso: Conta com um sistema de giro motorizado ou por solenoides de alta durabilidade, projetado para operar de forma suave e silenciosa em ambientes de alto tráfego.
+
+                          •  Estética Inovadora: Seu gabinete em aço carbono com pintura epóxi e design vertical moderno valoriza o ambiente, sendo muito utilizada em prédios comerciais de alto padrão e academias.
+
+                            Destaque Principal: A Catraca Control Facial Next é a "topo de linha" em termos de experiência do usuário. Se você busca o equilíbrio perfeito entre uma estética futurista, uma tela touch intuitiva e a velocidade de reconhecimento mais rápida do mercado, este é o modelo ideal.`, 
                 specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
               },
               { id: 'acesso 7', 
                 nome: "Facial ID Face", 
                 img: "/idface.jpg", 
-                desc: "Acesso rápido via cartão ou chaveiro.", 
-                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
+                desc: "Acesso rápido e eficiente com precisão.", 
+                detalhes: `Facial ID Face: Inteligência e Controle na Palma da Mão.
+                
+                          O Facial ID Face (da Control iD) é um controlador de acesso autônomo que redefine a segurança através do reconhecimento facial, oferecendo um hardware extremamente potente em um formato compacto.
+
+                          •  Reconhecimento Facial Ultrarrápido: Equipado com algoritmos de deep learning, identifica usuários em frações de segundo, mesmo com acessórios, garantindo uma entrada fluida.
+
+                          •  Segurança Anti-Fraude: Possui tecnologia de detecção de rosto vivo (liveness detection), que impede o acesso através de fotos ou vídeos, garantindo que apenas pessoas reais sejam validadas.
+
+                          •  Interface Touchscreen Intuitiva: Conta com uma tela colorida sensível ao toque de alta resolução, facilitando a interação e permitindo o registro de senhas diretamente no visor.
+
+                          •  Gestão de Grande Escala: Capacidade para gerenciar milhares de faces e armazenar um vasto histórico de logs, ideal para empresas, condomínios e áreas de alta segurança.
+
+                          •  Conectividade Total: Integração nativa via rede (TCP/IP), Wi-Fi (opcional) e suporte para acionamento de fechaduras eletromecânicas ou eletroímãs.
+
+                            Destaque Principal: O Facial ID Face é a escolha ideal se você busca o máximo de tecnologia de reconhecimento facial da Control iD sem a necessidade de uma catraca física. É perfeito para ser fixado em paredes ou portas de vidro, unindo um design futurista com a maior velocidade de processamento da categoria.`, 
                 specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
               },
+              { id: 'acesso 8', 
+                nome: "Linha Facial EVO", 
+                img: "/banner4.jpg", 
+                desc: "Toda a linha 40,50,60,70,80,90 e 100, para maior precição e segurança.", 
+                detalhes: `Linha Facial EVO: Excelência em Controle de Acesso.
+
+                            A linha EVO é a solução definitiva para a gestão de acesso inteligente. Utiliza algoritmos de inteligência artificial para garantir que apenas pessoas autorizadas circulem pelos ambientes, oferecendo segurança máxima com tecnologia sem contato.
+
+                          •  Gestão de Fluxo em Tempo Real: Projetada para liberar entradas e saídas de forma instantânea, eliminando gargalos em recepções, portarias de condomínios e áreas restritas.
+
+                          •  Segurança "Touchless" de Alta Precisão: O reconhecimento facial permite o acesso de mãos livres, o que garante maior higiene e uma experiência de usuário moderna e fluida.
+
+                          •  Tecnologia Anti-Fraude (Liveness Detection): Equipados com sensores que identificam profundidade e calor, os terminais impedem o acesso por meio de fotos ou vídeos, garantindo a identidade real do usuário.
+
+                          • Versatilidade de Instalação: Com modelos que variam do ultra-compacto ao robusto, a linha se adapta a qualquer cenário, desde portas de vidro em escritórios até integração com catracas e cancelas.
+
+                          •  Integração Completa: Comunicação nativa com softwares de monitoramento, permitindo o gerenciamento de níveis de acesso por horários, grupos e visitantes, com relatórios detalhados de movimentação.
+
+                            Destaque Principal: A Linha Facial EVO de Acesso foca na experiência do usuário e na proteção patrimonial. É o equipamento ideal para quem busca substituir chaves, crachás e senhas por uma biometria facial rápida, segura e esteticamente impecável.`, 
+                specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
+              },
+              { id: 'acesso 9', 
+                nome: "Facial TOP DATA", 
+                img: "/facialtopdata.png", 
+                desc: "Acesso rápido e eficiente com precisão.", 
+                detalhes: `Facial TOPDATA: Tecnologia Robusta e Inteligente.
+
+                            O Facial TOPDATA é um terminal de alta performance desenvolvido para quem busca um controle de acesso rigoroso, combinando hardware de alta durabilidade com o que há de mais moderno em biometria facial.
+
+                          •  Identificação "Sem Toque" Instantânea: Realiza a leitura do rosto em menos de 1 segundo, garantindo agilidade no acesso e eliminando a necessidade de crachás ou contato físico, o que aumenta a higiene do local.
+
+                          •  Segurança Avançada (Liveness Detection): Utiliza tecnologia para detectar se o rosto é de uma pessoa viva, impedindo tentativas de acesso fraudulento com fotos, vídeos ou máscaras.
+
+                          •  Gestão de Ambientes Diversos: Excelente para controlar a entrada em escritórios, indústrias, áreas restritas e condomínios, registrando com precisão quem acessou cada local.
+
+                          •  Integração Facilitada: Funciona de forma nativa com softwares de gestão, permitindo a criação de regras de acesso personalizadas por horários, departamentos ou níveis de permissão.
+
+                          •  Visual Moderno e Funcional: Possui uma interface colorida e amigável que facilita a interação do usuário, além de um design elegante que se adapta a recepções e áreas comuns.
+
+                            Destaque Principal: O Facial TOPDATA é reconhecido por sua robustez técnica. É o equipamento ideal para empresas que precisam de um sistema de acesso que não falha e que suporte um fluxo intenso de identificações diárias com extrema confiabilidade.`, 
+                specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
+              },
+               { id: 'acesso 10', 
+                nome: "Facial HENRY", 
+                img: "/facialhenry.png", 
+                desc: "Acesso rápido e eficiente com precisão.", 
+                detalhes: `Facial HENRY: Tecnologia de Ponta para Controle de Acesso.
+
+                            O terminal Facial HENRY é uma solução robusta e inteligente desenvolvida para garantir que a circulação em ambientes restritos seja feita com total segurança e praticidade, sem a necessidade de chaves ou crachás físicos.
+
+                          •  Reconhecimento Facial Ultrarrápido: Equipado com inteligência artificial para identificar usuários em tempo real, garantindo uma entrada fluida mesmo em locais com grande circulação de pessoas.
+
+                          •  Segurança "Touchless" (Sem Contato): Proporciona uma experiência de acesso higiênica e moderna, permitindo a liberação de portas e bloqueios apenas com a aproximação do rosto.
+
+                          •  Sistema Anti-Fraude Avançado: Possui tecnologia de detecção de vivacidade, que distingue rostos reais de fotos ou vídeos, impedindo tentativas de invasão ou acesso não autorizado.
+
+                          •  Design Moderno e Funcional: Com uma interface visual intuitiva e iluminada, orienta o usuário durante o acesso e se integra esteticamente a recepções, condomínios e áreas corporativas.
+
+                          •  Gestão Estratégica: Permite a integração total com sistemas de monitoramento, facilitando o gerenciamento de permissões de acesso por horários e grupos específicos.
+
+                            Destaque Principal: O Facial HENRY é a escolha ideal para quem busca confiabilidade e rapidez. É o equipamento perfeito para substituir métodos antigos de abertura de portas por uma biometria facial de elite, elevando o nível de segurança patrimonial da empresa ou condomínio.`,
+                specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
+              },
               { id: 'acesso 2', 
-                nome: "Fechadura Eletroímã", 
-                img: "/fechadura.jpg", 
-                desc: "Força de tração de até 300kg.", 
-                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                nome: "Toda Linha Intelbras", 
+                img: "/intelbras.png", 
+                desc: "Todos os produtos para acesso da intelbras, só aqui!", 
+                detalhes: `Linha Intelbras: Solução Completa para Segurança de Acesso.
+
+                            Diferente dos terminais faciais, este conjunto representa o "ecossistema" de hardware necessário para garantir a segurança física de portas e portões, combinando praticidade e alta resistência.
+
+                          •  Sistemas de Identificação: Inclui teclados numéricos para senhas e leitores de tags de proximidade (RFID), permitindo que moradores ou funcionários entrem sem o uso de chaves físicas.
+
+                          •  Travamento Magnético: Composto por fechaduras eletroímãs de alta força de tração, garantindo que a porta permaneça bloqueada com total segurança e seja liberada apenas via sistema.
+
+                          •  Componentes de Saída: Acompanha botoeiras de inox para liberação interna rápida, essenciais para uma saída prática e segura de ambientes monitorados.
+
+                          •  Energia e Backup: O kit conta com fonte de alimentação e baterias dedicadas, assegurando que o controle de acesso continue operando normalmente mesmo em situações de queda de energia.
+
+                          •  Alta Durabilidade: Equipamentos projetados pela Intelbras para suportar uso contínuo, com acabamento que evita oxidação e falhas mecânicas.
+
+                            Destaque Principal: A Linha Intelbras é a base para quem deseja automatizar a segurança de portas. É a escolha mais confiável para condomínios e empresas que precisam de um sistema completo, desde o leitor na parede até o travamento magnético da porta, com a garantia de uma das maiores marcas do Brasil.`, 
                 specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
               },
 
@@ -718,18 +1082,83 @@ export default function App() {
           </div>
 
           {selectedProduct && (
-            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
-              <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '800px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
-                <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer' }}>X</button>
-                <div style={{ flex: '1 1 350px', minHeight: '350px', backgroundImage: `url(${selectedProduct.img})`, backgroundSize: 'cover' }} />
-                <div style={{ flex: '1 1 350px', padding: '40px' }}>
-                  <h2 style={{ color: '#002147' }}>{selectedProduct.nome}</h2>
-                  <p>{selectedProduct.detalhes}</p>
-                  <button style={{ ...styles.contactBtn, width: '100%', marginTop: '20px' }} onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquerir o ${selectedProduct.nome}`)}>Orçamento WhatsApp</button>
+          <div style={{ 
+            position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
+            backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', 
+            alignItems: 'center', zIndex: 5000, padding: isMobile ? '10px' : '20px' 
+          }}>
+            <div style={{ 
+              backgroundColor: 'white', borderRadius: '20px', maxWidth: '900px', width: '100%', 
+              display: 'flex', flexDirection: isMobile ? 'column' : 'row', 
+              position: 'relative', overflow: 'hidden', maxHeight: '90vh' 
+            }}>
+              
+              {/* BOTÃO FECHAR */}
+              <button 
+                onClick={() => setSelectedProduct(null)} 
+                style={{ 
+                  position: 'absolute', top: '15px', right: '15px', border: 'none', 
+                  background: 'rgba(0,0,0,0.1)', borderRadius: '50%', width: '35px', 
+                  height: '35px', cursor: 'pointer', zIndex: 10 
+                }}
+              >
+                X
+              </button>
+
+              {/* COLUNA DA ESQUERDA: IMAGEM */}
+              <div style={{ 
+                flex: isMobile ? '0 0 250px' : '1 1 45%', 
+                backgroundColor: '#fff',
+                backgroundImage: `url(${selectedProduct.img})`, 
+                backgroundSize: 'contain', 
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                borderRight: isMobile ? 'none' : '1px solid #eee'
+              }} />
+
+              {/* COLUNA DA DIREITA: CONTEÚDO COM SCROLL */}
+              <div style={{ 
+                flex: '1 1 55%', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                maxHeight: isMobile ? '400px' : '600px', // Altura máxima para ativar o scroll
+                position: 'relative'
+              }}>
+                
+                {/* ÁREA DE TEXTO COM SCROLL */}
+                <div style={{ 
+                  padding: '30px 30px 100px 30px', // Padding inferior maior para não cobrir o texto com o botão
+                  overflowY: 'auto', 
+                  flex: 1 
+                }}>
+                  <h2 style={{ color: '#002147', marginTop: 0, fontSize: '1.8rem' }}>{selectedProduct.nome}</h2>
+                  <div style={{ 
+                    whiteSpace: 'pre-line', // Mantém as quebras de linha dos seus detalhes
+                    color: '#444', 
+                    lineHeight: '1.6',
+                    fontSize: '0.95rem'
+                  }}>
+                    {selectedProduct.detalhes}
+                  </div>
+                </div>
+
+                {/* RODAPÉ FIXO COM BOTÃO */}
+                <div style={{ 
+                  position: 'absolute', bottom: 0, left: 0, width: '100%', 
+                  padding: '20px 30px', backgroundColor: 'white', 
+                  borderTop: '1px solid #eee', boxShadow: '0 -5px 15px rgba(0,0,0,0.05)' 
+                }}>
+                  <button 
+                    style={{ ...styles.contactBtn, width: '100%', margin: 0 }} 
+                    onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquirir o ${selectedProduct.nome}`)}
+                  >
+                    Orçamento WhatsApp
+                  </button>
                 </div>
               </div>
             </div>
-          )}
+          </div>
+        )}
         </div>
         } />
 
@@ -763,32 +1192,82 @@ export default function App() {
                 id: 'sistema 1', 
                 nome: "Secullum Ponto Web", 
                 img: "/sistemasecullum.jpg", 
-                desc: "Gestão completa de portas e usuários.", 
-                detalhes: "Capacidade para controlar múltiplos leitores e fechaduras. Comunicação via rede e software de gestão integrado.", 
+                desc: "Gestão completa para seus colaboradores.", 
+                detalhes: `Secullum Ponto Web: Gestão de Jornada na Nuvem.
+
+                            O Secullum Ponto Web é uma solução completa e moderna para o tratamento de pontos, permitindo que gestores e profissionais de RH controlem a jornada de trabalho de qualquer lugar, com total segurança jurídica.
+
+                          •  Acesso em Qualquer Lugar (Cloud): Por ser um sistema 100% na nuvem, você acessa as informações via navegador ou aplicativo, sem necessidade de instalações complexas em servidores locais.
+
+                          •  Aplicativo para o Colaborador: Permite o registro de ponto pelo celular para funcionários externos ou em home office, incluindo geolocalização (GPS) e reconhecimento facial (selfie) para validar a marcação.
+
+                          •  Tratamento de Ponto Automatizado: Facilita o fechamento do mês com cálculos automáticos de horas extras, banco de horas, adicional noturno e faltas, reduzindo drasticamente erros manuais.
+
+                          •  Fluxo de Aprovações: O colaborador pode solicitar ajustes, incluir atestados e justificar esquecimentos diretamente pelo app, e o gestor aprova ou nega em poucos cliques.
+
+                          •  Conformidade Legal (Portaria 671): Sistema totalmente adequado às normas do Ministério do Trabalho e Emprego, gerando arquivos fiscais e relatórios auditáveis com rapidez.
+
+                            Destaque Principal: O Secullum Ponto Web é a ferramenta ideal para a descentralização do RH. Ele empodera o gestor e o colaborador, transformando o fechamento do ponto — que antes levava dias — em um processo ágil, transparente e seguro.`, 
                 specs: ["Display Touchscreen", "Biometria/Senha/Cartão", "Web Server", "Até 15.000 usuários"] 
               },
               { 
                 id: 'sistema 2', 
                 nome: "Evo Ponto Web", 
                 img: "/evoponto.jpeg", 
-                desc: "Força de tração de até 300kg.", 
-                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                desc: "Gestão completa para seus colaboradores.", 
+                detalhes: `Evo Ponto Web: Gestão Inteligente e Mobile.
+
+                            O Evo Ponto Web é uma plataforma moderna voltada para empresas que precisam de mobilidade e dados em tempo real. É o complemento ideal para os terminais da linha Evo, focando na agilidade do RH.
+
+                          •  Aplicativo com Reconhecimento Facial: Permite que o colaborador registre o ponto pelo celular com validação facial e cerca geográfica (GPS), ideal para equipes externas.
+
+                          •  Painel do Gestor: Gráficos intuitivos que mostram atrasos, faltas e horas extras em tempo real, facilitando a tomada de decisão.
+
+                          •  Descentralização: O próprio funcionário pode anexar atestados e solicitar ajustes de ponto pelo app, que chegam para aprovação imediata do supervisor.
+
+                          •  Nuvem Segura: Sem necessidade de servidores internos; os dados ficam protegidos e acessíveis de qualquer navegador 24h por dia.
+
+                          Destaque Principal: O Evo Ponto Web é a solução definitiva para a mobilidade do RH. Ele se destaca pela interface ultra-moderna e pelo aplicativo que utiliza a mesma tecnologia de reconhecimento facial dos relógios físicos, criando um ecossistema único, seguro e extremamente fácil de usar tanto para quem está no escritório quanto para quem trabalha na rua.`, 
                 specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
               },
               { 
                 id: 'sistema 3', 
                 nome: "Acuttis Web", 
                 img: "/sistemaacuttis.jpg", 
-                desc: "Acesso rápido via cartão ou chaveiro.", 
-                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
+                desc: "Gestão completa para seus colaboradores.", 
+                detalhes: `Acuttis Web: Alta Performance em Nuvem.
+
+                            O Acuttis é um software de tratamento de ponto em nuvem reconhecido pela sua interface limpa e rapidez no processamento de grandes volumes de dados, atendendo desde pequenos negócios até grandes corporações.
+
+                          •  Automação de Cálculos: Configuração simplificada de escalas complexas, banco de horas e turnos de revezamento.
+
+                          •  Integração Total: Comunica-se perfeitamente com os principais relógios de ponto do mercado, coletando as marcações de forma automática e transparente.
+
+                          •  Segurança Jurídica: Totalmente adequado às Portarias do MTP, garantindo que o fechamento da folha esteja sempre dentro da lei.
+
+                          •  Portal do Colaborador: Melhora a comunicação interna ao permitir que o funcionário visualize seu espelho de ponto e saldo de horas a qualquer momento.
+
+                            Destaque Principal: Enquanto o Evo Ponto Web se destaca pela excelente experiência mobile e tecnologia facial no app, o Acuttis Web é amplamente elogiado pela sua robustez técnica e facilidade em gerenciar regras de cálculo complexas de RH.`, 
                 specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
               },
               { 
                 id: 'sistema 4', 
                 nome: "EZ Point Web", 
                 img: "/sistemaez.jpg", 
-                desc: "Acesso rápido via cartão ou chaveiro.", 
-                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
+                desc: "Gestão completa para seus colaboradores.", 
+                detalhes: `EzPoint Web: Simplicidade e Eficiência.
+
+                            O EzPoint Web é uma solução de gerenciamento de ponto via internet que foca na objetividade. É ideal para empresas que buscam um sistema prático, rápido de configurar e muito fácil de operar.
+
+                          •  Interface Amigável: Menus diretos que facilitam o aprendizado da equipe de RH, reduzindo o tempo gasto com o fechamento do ponto.
+
+                          •  Monitoramento Remoto: Acompanhe quem está presente na empresa ou quem registrou ponto em home office através de um dashboard centralizado.
+
+                          •  Relatórios Ágeis: Emita espelhos de ponto, relatórios de absenteísmo e exportação para folha de pagamento em poucos segundos.
+
+                          •  Baixo Custo de Manutenção: Por ser 100% web, dispensa atualizações manuais e suporte técnico presencial constante.
+
+                            Destaque Principal: O EzPoint Web é o "custo-benefício" da categoria. Ele entrega todas as obrigatoriedades legais e as ferramentas essenciais de gestão com uma das interfaces mais leves e simples do mercado.`, 
                 specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
               },
             ].map((prod) => (
@@ -806,20 +1285,85 @@ export default function App() {
           <div style={{ textAlign: 'center', marginTop: '40px' }}>
             <button style={styles.contactBtn} onClick={() => navigateTo('inicio')}>Voltar ao Início</button>
           </div>
+            {selectedProduct && (
+              <div style={{ 
+                position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
+                backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', 
+                alignItems: 'center', zIndex: 5000, padding: isMobile ? '10px' : '20px' 
+              }}>
+                <div style={{ 
+                  backgroundColor: 'white', borderRadius: '20px', maxWidth: '900px', width: '100%', 
+                  display: 'flex', flexDirection: isMobile ? 'column' : 'row', 
+                  position: 'relative', overflow: 'hidden', maxHeight: '90vh' 
+                }}>
+                  
+                  {/* BOTÃO FECHAR (X) */}
+                  <button 
+                    onClick={() => setSelectedProduct(null)} 
+                    style={{ 
+                      position: 'absolute', top: '15px', right: '15px', border: 'none', 
+                      background: 'rgba(0,0,0,0.1)', borderRadius: '50%', width: '35px', 
+                      height: '35px', cursor: 'pointer', zIndex: 10 
+                    }}
+                  >
+                    X
+                  </button>
 
-          {selectedProduct && (
-            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
-              <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '800px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
-                <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer' }}>X</button>
-                <div style={{ flex: '1 1 350px', minHeight: '350px', backgroundImage: `url(${selectedProduct.img})`, backgroundSize: 'cover' }} />
-                <div style={{ flex: '1 1 350px', padding: '40px' }}>
-                  <h2 style={{ color: '#002147' }}>{selectedProduct.nome}</h2>
-                  <p>{selectedProduct.detalhes}</p>
-                  <button style={{ ...styles.contactBtn, width: '100%', marginTop: '20px' }} onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquerir o ${selectedProduct.nome}`)}>Orçamento WhatsApp</button>
+                  {/* LADO ESQUERDO: IMAGEM */}
+                  <div style={{ 
+                    flex: isMobile ? '0 0 250px' : '1 1 45%', 
+                    backgroundColor: '#fff',
+                    backgroundImage: `url(${selectedProduct.img})`, 
+                    backgroundSize: 'contain', 
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    padding: '20px',
+                    borderRight: isMobile ? 'none' : '1px solid #eee'
+                  }} />
+
+                  {/* LADO DIREITO: CONTEÚDO */}
+                  <div style={{ 
+                    flex: '1 1 55%', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    position: 'relative',
+                    backgroundColor: 'white'
+                  }}>
+                    
+                    {/* CORPO DO TEXTO COM SCROLL */}
+                    <div style={{ 
+                      padding: '30px 30px 100px 30px', // Espaço extra no fim para o botão não cobrir o texto
+                      overflowY: 'auto', 
+                      flex: 1 
+                    }}>
+                      <h2 style={{ color: '#002147', marginTop: 0, fontSize: '1.8rem' }}>{selectedProduct.nome}</h2>
+                      <div style={{ 
+                        whiteSpace: 'pre-line', // Mantém as quebras de linha e parágrafos
+                        color: '#444', 
+                        lineHeight: '1.6',
+                        fontSize: '0.95rem'
+                      }}>
+                        {selectedProduct.detalhes}
+                      </div>
+                    </div>
+
+                    {/* RODAPÉ FIXO COM O BOTÃO */}
+                    <div style={{ 
+                      position: 'absolute', bottom: 0, left: 0, width: '100%', 
+                      padding: '20px 30px', backgroundColor: 'white', 
+                      borderTop: '1px solid #eee', boxShadow: '0 -5px 15px rgba(0,0,0,0.05)' 
+                    }}>
+                      <button 
+                        style={{ ...styles.contactBtn, width: '100%', margin: 0 }} 
+                        onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquirir o ${selectedProduct.nome}`)}
+                      >
+                        Orçamento WhatsApp
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
          } />
 
@@ -855,7 +1399,21 @@ export default function App() {
                 img: "/idsecure.jfif", 
                 zoom: "1.4",
                 desc: "Gestão completa de portas e usuários.", 
-                detalhes: "Capacidade para controlar múltiplos leitores e fechaduras. Comunicação via rede e software de gestão integrado.", 
+                detalhes: `Sistema iDSecure: Gestão Unificada de Acesso.
+
+                            O iDSecure não é um hardware, mas sim o "cérebro" por trás dos equipamentos. É um software de gestão de acesso baseado em nuvem ou servidor local, projetado para centralizar o controle de todas as suas portas, catracas e usuários em uma única interface.
+
+                          •  Controle Total de Usuários: Permite cadastrar, editar ou bloquear pessoas em massa, definindo exatamente quem pode entrar em qual local e em quais horários.
+
+                          •  Monitoramento em Tempo Real: Visualize instantaneamente cada tentativa de acesso, recebendo alertas de portas abertas, acessos negados ou invasões diretamente no seu computador ou dispositivo móvel.
+
+                          •  Gestão de Visitantes e Terceiros: Facilita o controle de pessoas temporárias, permitindo criar permissões com data e hora de expiração automática.
+
+                          •  Relatórios Inteligentes: Gere logs detalhados de movimentação para auditoria, segurança e otimização do fluxo de pessoas dentro da empresa ou condomínio.
+
+                          •  Integração Nativa: Totalmente compatível com a linha de dispositivos faciais e biométricos (como o iDFace e catracas Control iD), garantindo que a comunicação entre o software e as portas seja rápida e segura.
+
+                            Destaque Principal: O iDSecure é o que transforma o seu hardware em uma solução de segurança estratégica. Se você tem mais de uma porta ou muitos usuários, este sistema é indispensável para organizar a gestão sem precisar configurar cada aparelho manualmente, economizando tempo e aumentando o controle operacional.`,  
                 specs: ["Display Touchscreen", "Biometria/Senha/Cartão", "Web Server", "Até 15.000 usuários"] 
               },
               
@@ -864,8 +1422,22 @@ export default function App() {
                 nome: "Sistema SECULLUM ACESSO", 
                 img: "/secullumacesso.jfif", 
                 zoom: "1.2",
-                desc: "Acesso rápido via cartão ou chaveiro.", 
-                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
+                desc: "Gestão completa de portas e usuários, via web ou app.", 
+                detalhes: `Sistema Secullum Acesso: Flexibilidade e Gestão em Tempo Real.
+
+                            O Secullum Acesso é um software de gerenciamento de alta performance, projetado para controlar o fluxo de pessoas e veículos de forma centralizada e intuitiva. Ele serve como a interface de comando para portarias, academias e empresas.
+
+                          •  Multiplataforma e Acessível: Permite o controle total via desktop ou dispositivo móvel (smartphone), possibilitando que gestores monitorem acessos de qualquer lugar.
+
+                          •  Gestão de Visitantes e Provisórios: Facilita o cadastro rápido de prestadores de serviço e visitantes, permitindo a criação de convites com QR Code ou senhas temporárias que expiram automaticamente.
+
+                          •  Integração com Diversas Tecnologias: O sistema é compatível com uma vasta gama de hardwares (catracas, cancelas e portas), aceitando identificação via cartão, chaveiro (tag), biometria digital e facial.
+
+                          •  Módulos de Segurança e Alertas: Emite avisos instantâneos para situações críticas, como tentativas de acesso não autorizadas, portas esquecidas abertas ou lotação máxima de ambientes.
+
+                          •  Relatórios Customizáveis: Oferece logs completos de entradas e saídas para auditorias internas, permitindo filtrar dados por data, horário, setor ou tipo de usuário.
+
+                            Destaque Principal: O diferencial do Secullum Acesso é a sua facilidade de uso aliada à robustez. É o software ideal para quem precisa de uma interface clara e organizada para lidar com um grande volume de usuários sem abrir mão da agilidade operacional no dia a dia.`, 
                 specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
               },
             ].map((prod) => (
@@ -884,18 +1456,85 @@ export default function App() {
           </div>
 
           {selectedProduct && (
-            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
-              <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '800px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
-                <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer' }}>X</button>
-                <div style={{ flex: '1 1 350px', minHeight: '350px', backgroundImage: `url(${selectedProduct.img})`, backgroundSize: 'cover' }} />
-                <div style={{ flex: '1 1 350px', padding: '40px' }}>
-                  <h2 style={{ color: '#002147' }}>{selectedProduct.nome}</h2>
-                  <p>{selectedProduct.detalhes}</p>
-                  <button style={{ ...styles.contactBtn, width: '100%', marginTop: '20px' }} onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquerir o ${selectedProduct.nome}`)}>Orçamento WhatsApp</button>
+              <div style={{ 
+                position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
+                backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', 
+                alignItems: 'center', zIndex: 5000, padding: isMobile ? '10px' : '20px' 
+              }}>
+                <div style={{ 
+                  backgroundColor: 'white', borderRadius: '20px', maxWidth: '900px', width: '100%', 
+                  display: 'flex', flexDirection: isMobile ? 'column' : 'row', 
+                  position: 'relative', overflow: 'hidden', maxHeight: '90vh' 
+                }}>
+                  
+                  {/* BOTÃO FECHAR */}
+                  <button 
+                    onClick={() => setSelectedProduct(null)} 
+                    style={{ 
+                      position: 'absolute', top: '15px', right: '15px', border: 'none', 
+                      background: 'rgba(0,0,0,0.1)', borderRadius: '50%', width: '35px', 
+                      height: '35px', cursor: 'pointer', zIndex: 10 
+                    }}
+                  >
+                    X
+                  </button>
+
+                  {/* COLUNA DA ESQUERDA: IMAGEM FIXA */}
+                  <div style={{ 
+                    flex: isMobile ? '0 0 250px' : '1 1 45%', 
+                    backgroundColor: '#fff',
+                    backgroundImage: `url(${selectedProduct.img})`, 
+                    backgroundSize: 'contain', 
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    padding: '20px',
+                    borderRight: isMobile ? 'none' : '1px solid #eee'
+                  }} />
+
+                  {/* COLUNA DA DIREITA: CONTEÚDO E RODAPÉ */}
+                  <div style={{ 
+                    flex: '1 1 55%', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    position: 'relative',
+                    backgroundColor: 'white',
+                    overflow: 'hidden' // Garante que nada saia do limite da coluna
+                  }}>
+                    
+                    {/* ÁREA DE TEXTO COM SCROLL (Igual aos Relógios) */}
+                    <div style={{ 
+                      padding: '30px 30px 100px 30px', 
+                      overflowY: 'auto', 
+                      flex: 1 
+                    }}>
+                      <h2 style={{ color: '#002147', marginTop: 0, fontSize: '1.8rem' }}>{selectedProduct.nome}</h2>
+                      <div style={{ 
+                        whiteSpace: 'pre-line', 
+                        color: '#444', 
+                        lineHeight: '1.6',
+                        fontSize: '0.95rem'
+                      }}>
+                        {selectedProduct.detalhes}
+                      </div>
+                    </div>
+
+                    {/* RODAPÉ FIXO COM BOTÃO (Não sobe com o scroll) */}
+                    <div style={{ 
+                      position: 'absolute', bottom: 0, left: 0, width: '100%', 
+                      padding: '20px 30px', backgroundColor: 'white', 
+                      borderTop: '1px solid #eee', boxShadow: '0 -5px 15px rgba(0,0,0,0.05)' 
+                    }}>
+                      <button 
+                        style={{ ...styles.contactBtn, width: '100%', margin: 0 }} 
+                        onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquirir o ${selectedProduct.nome}`)}
+                      >
+                        Orçamento WhatsApp
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
          } />
 
@@ -930,40 +1569,70 @@ export default function App() {
                 id: 'suprimento 1', 
                 nome: "Bobina térmica", 
                 img: "/bobina.jpg", 
-                desc: "Gestão completa de portas e usuários.", 
-                detalhes: "Capacidade para controlar múltiplos leitores e fechaduras. Comunicação via rede e software de gestão integrado.", 
+                desc: "As melhores bobinas para seu relógio de ponto.", 
+                detalhes: `Bobina Térmica.
+
+                          •  Item indispensável para relógios de ponto que emitem comprovantes fiscais. Garante a durabilidade da impressão e o perfeito funcionamento do mecanismo impressor do equipamento.
+
+                          •  Alta Qualidade: Papel de excelente procedência que evita o desgaste prematuro da cabeça térmica do relógio.
+
+                          •  Conformidade: Produzida nos padrões exigidos pela legislação vigente para garantir a legibilidade dos dados por anos.`, 
                 specs: ["Display Touchscreen", "Biometria/Senha/Cartão", "Web Server", "Até 15.000 usuários"] 
               },
               { 
                 id: 'suprimento 2', 
                 nome: "Cartão Proximidade", 
                 img: "/cartao.jpg", 
-                desc: "Força de tração de até 300kg.", 
-                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                desc: "Mais particidade e alta resistência.", 
+                detalhes: `Cartão de Proximidade (RFID).
+
+                          •  A solução prática e durável para identificação em sistemas de acesso e ponto. Ideal para locais onde a biometria não é a primeira opção.
+
+                          •  Alta Resistência: Material robusto projetado para o uso diário intenso sem perder a eficácia de leitura.
+
+                          •  Compatibilidade: Funciona perfeitamente com leitores de 125kHz ou Mifare, dependendo da configuração do seu sistema.`, 
                 specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
               },
               { 
                 id: 'suprimento 3', 
-                nome: "Fonte Rep. HEXA/PRISMA", 
+                nome: "Fonte Para Relógio de Ponto( Todas as Marcas Aqui!).", 
                 img: "/fontehenry.jpg", 
-                desc: "Acesso rápido via cartão ou chaveiro.", 
-                detalhes: "Leitor auxiliar resistente à água, perfeito para áreas externas ou internas de condomínios.", 
+                desc: "A força que o seu relógio precisa.", 
+                detalhes: `Fonte de Alimentação Rep: HENRY-HEXA/PRISMA;TOPDATA;CONTROL ID;PROVEU;RW TECH;EVO.
+
+                          •  A peça chave para a estabilidade elétrica dos seus equipamentos Henry. Uma fonte confiável evita quebras e travamentos no sistema.
+
+                          •  Energia Estável: Desenvolvida especificamente para suportar a demanda energética dos modelos Hexa e Prisma.
+
+                          •  Segurança: Protege o hardware interno contra oscilações simples da rede elétrica.`, 
                 specs: ["Frequência 125kHz/13.56MHz", "LED Indicador", "Vedação IP66", "Design Compacto"] 
               },
               { 
                 id: 'suprimento 4', 
                 nome: "Cartão Cartografico", 
                 img: "/cartografico.jpg", 
-                desc: "Força de tração de até 300kg.", 
-                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                desc: "Praticidade e simplicidade no dia a dia.", 
+                detalhes: `Cartão Cartográfico.
+
+                          •  O suprimento clássico para empresas que utilizam o tradicional sistema de marcação mecânica.
+
+                          •  Padrão Universal: Compatível com os principais relógios cartográficos do mercado, como o Henry Vega.
+
+                          •  Organização: Layout claro para registro de entradas, saídas e conferência visual rápida da jornada.`, 
                 specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
               },
               { 
                 id: 'suprimento 5', 
                 nome: "Leitor Biométrico de Mesa Control ID", 
                 img: "/leitorbiometricomesa.jpg", 
-                desc: "Força de tração de até 300kg.", 
-                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                desc: "Rapidez e eficiência para seu RH.", 
+                detalhes: `Leitor Biométrico de Mesa Control iD.
+
+                          •  A ferramenta perfeita para agilizar o cadastro de digitais diretamente no computador, sem precisar deslocar o colaborador até o relógio de ponto ou catraca.
+
+                          •  Precisão Control iD: Sensor de alta resolução que captura as digitais com nitidez superior.
+
+                          •  Conexão USB: Plug-and-play, facilitando o uso imediato em recepções ou salas de RH.`, 
                 specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
               },
               { 
@@ -971,7 +1640,13 @@ export default function App() {
                 nome: "Chapeira para Cartografico", 
                 img: "/chapera.jpg", 
                 desc: "Chapeira para 25/50/100 cartões.", 
-                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                detalhes: `Chapeira para Cartográfico.
+
+                          •  O acessório de organização essencial para manter os cartões de ponto protegidos e em ordem numérica ou alfabética.
+
+                          •  Durabilidade: Construída em material resistente, disponível em diversas capacidades (25, 50 ou 100 lugares).
+
+                          •  Gestão Visual: Facilita para o funcionário encontrar seu cartão e para o gestor identificar ausências rapidamente.`, 
                 specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
               },
               { 
@@ -979,7 +1654,13 @@ export default function App() {
                 nome: "Chachás Personalizados", 
                 img: "/cracha.jpg", 
                 desc: "Quer chachá com a sua cara? Venha conferir.", 
-                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                detalhes: `Crachás Personalizados.
+
+                          •  Eleve o nível de profissionalismo da sua empresa com identificação visual customizada.
+
+                          •  Identidade Visual: Impressão de alta qualidade com logomarca, foto e dados do colaborador.
+
+                          •  Versatilidade: Pode ser utilizado apenas como identificação visual ou integrado com tecnologia de proximidade.`, 
                 specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
               },
               { 
@@ -987,7 +1668,13 @@ export default function App() {
                 nome: "Cartucho de Impressão para Cartográfico", 
                 img: "/cartografico1.jpg", 
                 desc: "Quer o melhor pro seu cartográfico? Venha conferir.", 
-                detalhes: "Ideal para portas de vidro, madeira ou metal. Alta durabilidade e baixo consumo de energia.", 
+                detalhes: `Cartucho de Impressão para Cartográfico.
+
+                          •  A fita de impressão necessária para manter os registros do seu relógio Henry Vega sempre nítidos e legíveis.
+
+                          •  Longa Duração: Fita de nylon de alta resistência que garante milhares de impressões antes da troca.
+
+                          •  Fácil Substituição: Sistema de encaixe simples para que o próprio usuário possa realizar a manutenção.`, 
                 specs: ["Silenciosa", "Acabamento em Alumínio", "Compatível com Botoeiras", "12V DC"] 
               },
 
@@ -1006,20 +1693,110 @@ export default function App() {
           <div style={{ textAlign: 'center', marginTop: '40px' }}>
             <button style={styles.contactBtn} onClick={() => navigateTo('inicio')}>Voltar ao Início</button>
           </div>
+              {selectedProduct && (
+                <div style={{ 
+                  position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
+                  backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', 
+                  alignItems: 'center', zIndex: 5000, padding: isMobile ? '10px' : '20px' 
+                }}>
+                  
+                  <div style={{ 
+                    backgroundColor: 'white', 
+                    borderRadius: '20px', 
+                    maxWidth: '900px', 
+                    width: '100%', 
+                    height: isMobile ? '90vh' : '80vh', 
+                    display: 'flex', 
+                    flexDirection: isMobile ? 'column' : 'row', 
+                    position: 'relative', 
+                    overflow: 'hidden' 
+                  }}>
+                    
+                    {/* Botão Fechar */}
+                    <button 
+                      onClick={() => setSelectedProduct(null)} 
+                      style={{ 
+                        position: 'absolute', top: '15px', right: '15px', border: 'none', 
+                        background: 'rgba(0,0,0,0.1)', borderRadius: '50%', width: '35px', 
+                        height: '35px', cursor: 'pointer', zIndex: 100 
+                      }}
+                    >
+                      X
+                    </button>
+                    
+                    {/* LADO ESQUERDO: IMAGEM FIXA */}
+                    <div style={{ 
+                      flex: isMobile ? 'none' : '1.2', 
+                      backgroundColor: '#fff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRight: isMobile ? 'none' : '1px solid #eee',
+                      borderBottom: isMobile ? '1px solid #eee' : 'none',
+                      height: isMobile ? '250px' : '100%',
+                      padding: '20px'
+                    }}>
+                      <div style={{ 
+                        width: '100%',
+                        height: '100%',
+                        backgroundImage: `url(${selectedProduct.img})`, 
+                        backgroundSize: 'contain',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center',
+                        transform: `scale(${selectedProduct.zoom || 1.0})` 
+                      }} />
+                    </div>
 
-          {selectedProduct && (
-            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
-              <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '800px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
-                <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer' }}>X</button>
-                <div style={{ flex: '1 1 350px', minHeight: '350px', backgroundImage: `url(${selectedProduct.img})`, backgroundSize: 'cover' }} />
-                <div style={{ flex: '1 1 350px', padding: '40px' }}>
-                  <h2 style={{ color: '#002147' }}>{selectedProduct.nome}</h2>
-                  <p>{selectedProduct.detalhes}</p>
-                  <button style={{ ...styles.contactBtn, width: '100%', marginTop: '20px' }} onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquerir o ${selectedProduct.nome}`)}>Orçamento WhatsApp</button>
+                    {/* LADO DIREITO: TEXTO COM SCROLL E BOTÃO FIXO */}
+                    <div style={{ 
+                      flex: '1', 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      height: isMobile ? 'calc(100% - 250px)' : '100%', 
+                      position: 'relative',
+                      backgroundColor: 'white'
+                    }}>
+                      
+                      {/* ÁREA DE TEXTO (SCROLL) */}
+                      <div style={{ 
+                        flex: 1, 
+                        padding: isMobile ? '25px' : '40px', 
+                        overflowY: 'auto', 
+                        paddingBottom: '100px' // Espaço para o texto não sumir atrás do botão
+                      }}>
+                        <h2 style={{ color: '#002147', marginBottom: '20px', fontSize: isMobile ? '1.5rem' : '1.8rem' }}>
+                          {selectedProduct.nome}
+                        </h2>
+                        <div style={{ 
+                          whiteSpace: 'pre-line', 
+                          fontSize: '15px', 
+                          lineHeight: '1.7', 
+                          color: '#444', 
+                          textAlign: 'left'
+                        }}>
+                          {selectedProduct.detalhes}
+                        </div>
+                      </div>
+
+                      {/* RODAPÉ FIXO COM BOTÃO (Não sobe com o scroll) */}
+                      <div style={{ 
+                        position: 'absolute', bottom: 0, left: 0, width: '100%', 
+                        padding: '20px 30px', backgroundColor: 'white', 
+                        borderTop: '1px solid #eee', boxShadow: '0 -5px 15px rgba(0,0,0,0.05)' 
+                      }}>
+                        <button 
+                          style={{ ...styles.contactBtn, width: '100%', margin: 0 }} 
+                          onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquirir o ${selectedProduct.nome}`)}
+                        >
+                          Orçamento WhatsApp
+                        </button>
+                      </div>
+
+                    </div>
+
+                  </div>
                 </div>
-              </div>
-            </div>
-          )}
+              )}
         </div>
          } />
          <Route path="/servicos" element={
@@ -1049,19 +1826,49 @@ export default function App() {
                 nome: "Atualização Catraca para Facial", 
                 img: "projetofacial.jpg", 
                 desc: "Projeto para Academias,escolas e muito mais.", 
-                detalhes: "Perfeito para funcionários externos com GPS e Selfie.", 
+                detalhes: `Atualização de Catraca para Facial.
+
+                          •  Transforme seu sistema antigo em uma solução de última geração sem precisar trocar todo o seu hardware.
+
+                          •  Modernização Inteligente: Adaptamos leitores faciais de alta precisão em catracas já existentes, garantindo mais agilidade e higiene no acesso.
+
+                          •  Foco em Resultados: Ideal para academias e escolas que precisam eliminar o uso de cartões e biometria digital, reduzindo filas e custos de manutenção.
+
+                          •  Upgrade Tecnológico: Sua recepção ganha um aspecto futurista e muito mais segurança contra fraudes.
+
+                            Destaque: A solução perfeita para quem quer modernidade com economia, aproveitando a estrutura que já possui para dar um salto em tecnologia facial.`, 
                 specs: ["GPS", "Nuvem", "Facial"] }, 
               { id: 'serviço 2', 
                 nome: "Manutenção e Instalação de Relógio de Ponto", 
                 img: "/banner5.png", 
                 desc: "Quer um serviço de qualidade? Venha conferir.", 
-                detalhes: "Homologado pelo MTP. Reconhecimento rápido e seguro.", 
+                detalhes: `Manutenção e Instalação de Relógio de Ponto.
+
+                          •  Suporte técnico especializado para garantir que a gestão da jornada da sua empresa nunca pare.
+
+                          •  Instalação Técnica: Configuramos seu equipamento seguindo rigorosamente as normas da Portaria 671, garantindo a validade jurídica dos registros.
+
+                          •  Manutenção Corretiva e Preventiva: Equipe treinada para resolver falhas de comunicação, problemas de impressão e ajustes de sensores de forma rápida.
+
+                          •  Treinamento Completo: Além de instalar, capacitamos sua equipe para operar o equipamento e o software de gestão com total autonomia.
+
+                            Destaque: Garantimos que sua empresa esteja 100% dentro da lei, eliminando riscos jurídicos e paradas operacionais no controle de ponto.`, 
                 specs: ["Facial", "Wi-Fi", "Portaria 671"] },
               { id: 'serviço 3', 
                 nome: "Manutenção e Instalação de Catracas de Acesso", 
                 img: "/servico5.jpg", 
                 desc: "Quer mais segurança para sua empresa? Venha conferir..", 
-                detalhes: "Instalamos sua catraca e damos manutenção pra sua maior segurança.", 
+                detalhes: `Manutenção e Instalação de Catracas de Acesso.
+
+                          •  Garanta a segurança patrimonial com bloqueios físicos sempre em perfeito estado de funcionamento.
+
+                          •  Projetos Sob Medida: Analisamos o fluxo do seu ambiente para instalar a catraca no local estratégico, garantindo organização e segurança.
+
+                          •  Revisão Mecânica e Eletrônica: Realizamos o ajuste de giros, lubrificação de solenoides e calibração de sensores para evitar travamentos indesejados.
+
+                          •  Suporte Especializado: Seja para condomínios, empresas ou áreas industriais, entregamos um serviço limpo, rápido e com garantia de funcionamento.
+
+                            Destaque: Focamos na continuidade do seu fluxo, assegurando que suas catracas operem de forma suave, silenciosa e sem interrupções no acesso.`, 
                 specs: ["Digital", "Impressora", "USB"] },
                    
               
@@ -1076,20 +1883,110 @@ export default function App() {
               </div>
             ))}
           </div>
+            {selectedProduct && (
+              <div style={{ 
+                position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
+                backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', 
+                alignItems: 'center', zIndex: 5000, padding: isMobile ? '10px' : '20px' 
+              }}>
+                
+                <div style={{ 
+                  backgroundColor: 'white', 
+                  borderRadius: '20px', 
+                  maxWidth: '900px', 
+                  width: '100%', 
+                  height: isMobile ? '90vh' : '80vh', 
+                  display: 'flex', 
+                  flexDirection: isMobile ? 'column' : 'row', 
+                  position: 'relative', 
+                  overflow: 'hidden' 
+                }}>
+                  
+                  {/* Botão Fechar */}
+                  <button 
+                    onClick={() => setSelectedProduct(null)} 
+                    style={{ 
+                      position: 'absolute', top: '15px', right: '15px', border: 'none', 
+                      background: 'rgba(0,0,0,0.1)', borderRadius: '50%', width: '35px', 
+                      height: '35px', cursor: 'pointer', zIndex: 100 
+                    }}
+                  >
+                    X
+                  </button>
+                  
+                  {/* LADO ESQUERDO: IMAGEM FIXA (Não rola) */}
+                  <div style={{ 
+                    flex: isMobile ? 'none' : '1.2', 
+                    backgroundColor: '#fff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRight: isMobile ? 'none' : '1px solid #eee',
+                    borderBottom: isMobile ? '1px solid #eee' : 'none',
+                    height: isMobile ? '250px' : '100%',
+                    padding: '20px'
+                  }}>
+                    <div style={{ 
+                      width: '100%',
+                      height: '100%',
+                      backgroundImage: `url(${selectedProduct.img})`, 
+                      backgroundSize: 'contain',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                      transform: `scale(${selectedProduct.zoom || 1.0})` 
+                    }} />
+                  </div>
 
-          {selectedProduct && (
-            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000, padding: '20px' }}>
-              <div style={{ backgroundColor: 'white', borderRadius: '20px', maxWidth: '800px', width: '100%', display: 'flex', flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
-                <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '15px', right: '15px', border: 'none', background: '#eee', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer' }}>X</button>
-                <div style={{ flex: '1 1 350px', minHeight: '350px', backgroundImage: `url(${selectedProduct.img})`, backgroundSize: 'cover' }} />
-                <div style={{ flex: '1 1 350px', padding: '40px' }}>
-                  <h2 style={{ color: '#002147' }}>{selectedProduct.nome}</h2>
-                  <p>{selectedProduct.detalhes}</p>
-                  <button style={{ ...styles.contactBtn, width: '100%', marginTop: '20px' }} onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquerir o ${selectedProduct.nome}`)}>Orçamento WhatsApp</button>
+                  {/* LADO DIREITO: CONTEÚDO COM SCROLL E BOTÃO FIXO */}
+                  <div style={{ 
+                    flex: '1', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    height: isMobile ? 'calc(100% - 250px)' : '100%', 
+                    position: 'relative',
+                    backgroundColor: 'white'
+                  }}>
+                    
+                    {/* ÁREA DE TEXTO (Com barra de rolagem) */}
+                    <div style={{ 
+                      flex: 1, 
+                      padding: isMobile ? '25px' : '40px', 
+                      overflowY: 'auto', 
+                      paddingBottom: '100px' // Espaço para o botão não sobrepor o final do texto
+                    }}>
+                      <h2 style={{ color: '#002147', marginBottom: '20px', fontSize: isMobile ? '1.5rem' : '1.8rem' }}>
+                        {selectedProduct.nome}
+                      </h2>
+                      <div style={{ 
+                        whiteSpace: 'pre-line', 
+                        fontSize: '15px', 
+                        lineHeight: '1.7', 
+                        color: '#444', 
+                        textAlign: 'left'
+                      }}>
+                        {selectedProduct.detalhes}
+                      </div>
+                    </div>
+
+                    {/* RODAPÉ FIXO COM BOTÃO (Não sobe com o scroll) */}
+                      <div style={{ 
+                        position: 'absolute', bottom: 0, left: 0, width: '100%', 
+                        padding: '20px 30px', backgroundColor: 'white', 
+                        borderTop: '1px solid #eee', boxShadow: '0 -5px 15px rgba(0,0,0,0.05)' 
+                      }}>
+                        <button 
+                          style={{ ...styles.contactBtn, width: '100%', margin: 0 }} 
+                          onClick={() => window.open(`https://wa.me/5585991220790?text=Olá, Gostaria de adquirir o ${selectedProduct.nome}`)}
+                        >
+                          Orçamento WhatsApp
+                      </button>
+                    </div>
+
+                  </div>
+
                 </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
          } />
 
